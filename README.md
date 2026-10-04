@@ -3,6 +3,9 @@
 > 中央民族大学教育学院「马上同心」社会实践团 ｜ 昭陵六骏马文化溯源与边疆宣讲实践
 > 本目录是可直接部署的**静态网站**，无需构建、无需 Node、无外部依赖。
 
+**线上地址**：<https://shichao194416.github.io/mashangtongxin/>
+**源码仓库**：<https://github.com/shichao194416/mashangtongxin>（GitHub Pages，`main` 分支根目录）
+
 ---
 
 ## 一、这个网站相比原站做了什么
