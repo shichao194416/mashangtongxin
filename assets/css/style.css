@@ -69,6 +69,11 @@ img, video, svg { display: block; max-width: 100%; }
 a { color: var(--zhu); text-decoration: none; }
 a:hover { text-decoration: underline; text-underline-offset: 3px; }
 button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
+/* 仅供读屏软件与搜索引擎读取，视觉上不可见、不参与布局 */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+}
 h1, h2, h3, h4 { font-family: var(--font-serif); color: var(--ink); line-height: 1.28; margin: 0; font-weight: 700; letter-spacing: .01em; }
 p { margin: 0 0 1em; }
 ul, ol { margin: 0 0 1em; padding-left: 1.35em; }
@@ -102,6 +107,19 @@ li { margin: .35em 0; }
 .section__title em { font-style: normal; color: var(--zhu); }
 .section__lead { font-size: 16.5px; color: var(--ink-3); margin: 0; }
 .section--dark .eyebrow { color: var(--jin-2); }
+
+/* 媒体外宣列表（成果展示 · 传播矩阵） */
+.media-list { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 10px; }
+.media-list li { margin: 0; }
+.media-list a {
+  display: block; padding: 12px 14px; border-radius: var(--radius-sm);
+  border: 1px solid rgba(169,130,44,.28); background: rgba(246,239,220,.5);
+  text-decoration: none; transition: border-color .22s, background .22s, transform .22s var(--ease);
+}
+.media-list a:hover { border-color: var(--jin); background: rgba(246,239,220,.9); transform: translateY(-2px); text-decoration: none; }
+.media-list b { display: block; font-family: var(--font-serif); font-size: 15px; color: var(--zhu); letter-spacing: .04em; }
+.media-list span { display: block; font-size: 13px; color: var(--ink-3); line-height: 1.6; margin-top: 3px; }
+.media-list em { display: block; font-style: normal; font-size: 11.5px; color: var(--jin); letter-spacing: .04em; margin-top: 6px; }
 
 /* ---------- 5. Progress + Nav ---------- */
 .progress {
@@ -144,78 +162,44 @@ li { margin: .35em 0; }
 .nav.is-open .nav__toggle span::before { top: 0; transform: rotate(45deg); }
 .nav.is-open .nav__toggle span::after { top: 0; transform: rotate(-45deg); }
 
-/* ---------- 6. Hero ---------- */
-.hero { position: relative; min-height: 100svh; display: grid; place-items: center; overflow: hidden; isolation: isolate; }
+/* ---------- 6. Hero：整幅主视觉铺满 ----------
+   主视觉原图（2400×1350，取自 Canva 导出包 de4f62af…）本身已把
+   「同心共铸·神骏新传」题词、院校院徽与四角「马上同心」榜书绘入画面，
+   因此首屏不再叠加文字层，只保留一条可读性沉降与「展卷」提示。
+   标题以 .sr-only 的真实文本保留在 DOM 中，供搜索引擎与读屏软件读取。 */
+.hero {
+  position: relative; min-height: 100svh;
+  display: grid; place-items: center; overflow: hidden; isolation: isolate;
+  background: #241d14; /* 图片未就位时的兜底色，取自画面暗部 */
+}
 .hero__bg { position: absolute; inset: 0; z-index: -2; }
-.hero__bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; animation: heroZoom 26s var(--ease) forwards; }
-@keyframes heroZoom { from { transform: scale(1.09); } to { transform: scale(1); } }
+.hero__bg img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center center;
+  animation: heroZoom 26s var(--ease) forwards;
+}
+@keyframes heroZoom { from { transform: scale(1.055); } to { transform: scale(1); } }
+/* 只在底部压一层很淡的沉降，保证「展卷」二字在任何缩放下都读得清；
+   画面本身已经很满，不再整体压暗，以免丢掉祥云与宫殿的色彩。 */
 .hero::after {
-  content: ""; position: absolute; inset: 0; z-index: -1;
-  background:
-    radial-gradient(115% 88% at 26% 34%, rgba(12,20,32,.30) 0%, rgba(12,20,32,.72) 55%, rgba(8,13,22,.92) 100%),
-    linear-gradient(180deg, rgba(10,16,26,.62) 0%, rgba(10,16,26,.30) 42%, rgba(10,16,26,.86) 100%);
+  content: ""; position: absolute; inset: auto 0 0 0; height: 180px; z-index: -1;
+  background: linear-gradient(180deg, rgba(20,15,8,0) 0%, rgba(20,15,8,.46) 100%);
+  pointer-events: none;
 }
-.hero__inner { position: relative; text-align: center; color: #fff; padding: calc(var(--nav-h) + 44px) 24px 96px; max-width: 940px; }
-.hero__seal {
-  width: 96px; height: 96px; margin: 0 auto 26px; border-radius: 50%;
-  display: grid; place-items: center; position: relative;
-  background: radial-gradient(circle at 34% 28%, #b8352c 0%, #9e2b25 52%, #7d2019 100%);
-  box-shadow: 0 0 0 1px rgba(255,255,255,.30), 0 0 0 6px rgba(158,43,37,.18),
-              0 0 0 7px rgba(201,162,39,.42), 0 14px 40px rgba(0,0,0,.45);
-  animation: sealIn 1s var(--ease) both;
-}
-.hero__seal::after {
-  content: ""; position: absolute; inset: 9px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.34); pointer-events: none;
-}
-.hero__seal img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
-@keyframes sealIn { from { opacity: 0; transform: scale(.7) rotate(-14deg); } to { opacity: 1; transform: none; } }
-.hero__kicker {
-  font-family: var(--font-serif);
-  font-size: 14px; letter-spacing: .34em; text-indent: .34em;
-  color: var(--jin-2); margin-bottom: 18px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center; gap: 14px;
-}
-.hero__kicker::before, .hero__kicker::after {
-  content: ""; width: 34px; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201,162,39,.85));
-}
-.hero__kicker::after { background: linear-gradient(270deg, transparent, rgba(201,162,39,.85)); }
-.hero__title {
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(56px, 11.5vw, 128px); line-height: 1.06; letter-spacing: .1em;
-  color: #fff; margin: 0 0 6px; text-indent: .1em;
-  text-shadow:
-    0 1px 0 rgba(0,0,0,.30),
-    0 0 42px rgba(201,162,39,.30),
-    0 6px 40px rgba(0,0,0,.55);
-}
-.hero__slogan {
-  font-family: var(--font-serif); font-size: clamp(17px, 2.7vw, 26px);
-  letter-spacing: .28em; text-indent: .28em; color: rgba(255,255,255,.94); margin: 18px 0 8px;
-}
-.hero__sub { font-family: var(--font-serif); font-size: 15px; letter-spacing: .16em; color: rgba(255,255,255,.70); margin-bottom: 40px; }
-.hero__rule {
-  position: relative; width: 150px; height: 1px; margin: 24px auto;
-  background: linear-gradient(90deg, transparent, rgba(201,162,39,.85) 22%, rgba(201,162,39,.85) 78%, transparent);
-}
-.hero__rule::before, .hero__rule::after {
-  content: ""; position: absolute; top: 50%; width: 5px; height: 5px;
-  transform: translateY(-50%) rotate(45deg); background: var(--jin-2); opacity: .9;
-}
-.hero__rule::before { left: 22px; }
-.hero__rule::after { right: 22px; }
-.hero__cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+/* 卷末边款：竖排「展卷」置于右下，避开画面中央的六骏剪影。
+   画面底部中央是浅色雾霭，白字压上去读不出来，故移到右侧深色祥云上。 */
 .hero__scroll {
-  position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%);
-  display: grid; place-items: center; gap: 8px;
-  font-family: var(--font-serif);
-  color: rgba(255,255,255,.66); font-size: 12.5px; letter-spacing: .3em; text-indent: .3em;
+  position: absolute;
+  right: clamp(22px, 4.5vw, 62px); bottom: clamp(26px, 5vh, 52px);
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  font-family: var(--font-display);
+  color: rgba(255,252,244,.82); font-size: 15px;
   text-decoration: none;
+  text-shadow: 0 1px 14px rgba(0,0,0,.85), 0 0 4px rgba(0,0,0,.6);
 }
-.hero__scroll:hover { text-decoration: none; color: rgba(255,255,255,.9); }
-.hero__scroll i { display: block; width: 1px; height: 38px; background: linear-gradient(180deg, rgba(255,255,255,.65), transparent); animation: scrollCue 2s var(--ease) infinite; }
+.hero__scroll:hover { text-decoration: none; color: #fff; }
+.hero__scroll span { writing-mode: vertical-rl; text-orientation: upright; letter-spacing: .0em; }
+.hero__scroll i { display: block; width: 1px; height: 42px; background: linear-gradient(180deg, rgba(255,252,244,.8), transparent); animation: scrollCue 2s var(--ease) infinite; }
 @keyframes scrollCue { 0%,100% { opacity: .25; transform: scaleY(.55); } 50% { opacity: 1; transform: scaleY(1); } }
 
 /* ---------- 7. Buttons ---------- */
@@ -294,9 +278,12 @@ li { margin: .35em 0; }
 /* 团队 Logo：整行卡片，Logo 居左、说明居右
    （原站 logo 只有 107×107，显示尺寸控制在 120px 以内，避免放大发虚） */
 .card--logo { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+/* 正确团队 Logo 是「方印 + 白马 + 马上同心社会实践团」的横版锁定图（749×120），
+   旧版误用了一张 107×107 的抖音二维码，故此处按横版比例给尺寸。 */
 .card--logo > img {
-  width: 120px; height: 120px; flex: 0 0 auto; object-fit: contain;
-  background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 8px;
+  width: clamp(220px, 30%, 340px); height: auto; flex: 0 0 auto; object-fit: contain;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 12px 14px; box-sizing: border-box;
 }
 .card--logo > div { flex: 1 1 320px; min-width: 0; }
 
@@ -578,6 +565,7 @@ li { margin: .35em 0; }
 /* ---------- 16. Video ---------- */
 .videos { display: grid; grid-template-columns: 1.55fr 1fr; gap: 22px; }
 .videos--one { grid-template-columns: 1fr; }
+.videos--two { grid-template-columns: 1fr 1fr; }
 .video-card { position: relative; border-radius: var(--radius); overflow: hidden; cursor: pointer; background: #0d1420; border: 1px solid rgba(255,255,255,.1); }
 .video-card img { width: 100%; height: 100%; object-fit: cover; opacity: .62; transition: opacity .4s, transform .6s var(--ease); }
 .video-card:hover img { opacity: .8; transform: scale(1.04); }
@@ -670,7 +658,7 @@ li { margin: .35em 0; }
 
 /* ---------- 18. Footer ---------- */
 .footer { background: #16130f; color: #8f877d; padding: 58px 0 34px; font-size: 14px; }
-.footer__grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 34px; margin-bottom: 38px; }
+.footer__grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.15fr; gap: 34px; margin-bottom: 38px; align-items: start; }
 .footer h4 { color: #efe8dc; font-size: 15.5px; margin-bottom: 14px; letter-spacing: .06em; }
 .footer a { color: #b3a99c; }
 .footer a:hover { color: var(--jin-2); }
@@ -680,8 +668,69 @@ li { margin: .35em 0; }
 .footer__brand b { font-family: var(--font-serif); font-size: 19px; color: #efe8dc; letter-spacing: .08em; }
 .footer__bottom { border-top: 1px solid rgba(255,255,255,.1); padding-top: 22px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font-size: 13px; }
 
-/* ---------- 19. To-top ---------- */
-.totop {
+/* 18b. 页脚「关注我们」二维码 */
+.footer__qr { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.footer__qr figure { margin: 0; text-align: center; }
+.footer__qr img {
+  width: 100%; height: auto; aspect-ratio: 1/1; object-fit: contain;
+  background: #fff; border-radius: 8px; padding: 5px; box-sizing: border-box;
+}
+.footer__qr figcaption { font-size: 11.5px; color: #8f877d; margin-top: 6px; letter-spacing: .04em; }
+
+/* 18c. 页脚音效开关 */
+.sfx-toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 20px; padding: 8px 15px 8px 12px;
+  border: 1px solid rgba(255,255,255,.16); border-radius: 999px;
+  background: rgba(255,255,255,.05); color: #b3a99c;
+  font-family: var(--font-serif); font-size: 13px; letter-spacing: .06em;
+  transition: color .22s, border-color .22s, background .22s;
+}
+.sfx-toggle:hover { color: var(--jin-2); border-color: rgba(201,162,39,.45); }
+.sfx-toggle__ico { font-size: 14px; line-height: 1; opacity: .9; }
+.sfx-toggle[aria-pressed="false"] { color: #6f675e; }
+.sfx-toggle[aria-pressed="false"] .sfx-toggle__ico { opacity: .4; position: relative; }
+.sfx-toggle[aria-pressed="false"] .sfx-toggle__ico::after {
+  content: ""; position: absolute; left: -3px; top: 50%; width: 20px; height: 1px;
+  background: currentColor; transform: rotate(-45deg);
+}
+
+/* ---------- 18d. 背景音乐按钮 ----------
+   浏览器会拦截自动播放，所以不做「自动响起」，改成左下角一个显式按钮；
+   右下角已是「回到顶部」，两侧分开放置互不遮挡。 */
+.bgm {
+  position: fixed; left: 24px; bottom: 24px; z-index: 140;
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 11px 18px 11px 15px; border-radius: 999px;
+  background: rgba(22,19,15,.80);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border: 1px solid rgba(201,162,39,.34);
+  color: #e6d9bd; font-family: var(--font-serif);
+  font-size: 13.5px; letter-spacing: .1em;
+  box-shadow: 0 10px 30px rgba(0,0,0,.28);
+  transition: color .22s, border-color .22s, transform .22s var(--ease), background .22s;
+}
+.bgm:hover { color: var(--jin-2); border-color: var(--jin); transform: translateY(-2px); }
+.bgm__ico { font-size: 15px; line-height: 1; display: inline-block; }
+.bgm.is-playing { color: var(--jin-2); border-color: rgba(201,162,39,.7); }
+.bgm.is-playing .bgm__ico { animation: bgmPulse 1.5s var(--ease) infinite; }
+@keyframes bgmPulse { 0%,100% { opacity: .55; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.12); } }
+/* 未开启时给一圈缓慢扩散的金环，提示「这里有音乐可开」，但不主动出声 */
+.bgm:not(.is-playing)::after {
+  content: ""; position: absolute; inset: -1px; border-radius: 999px;
+  border: 1px solid rgba(201,162,39,.5); pointer-events: none;
+  animation: bgmHint 2.6s var(--ease) infinite;
+}
+@keyframes bgmHint {
+  0%   { opacity: .7; transform: scale(1); }
+  70%  { opacity: 0;  transform: scale(1.22); }
+  100% { opacity: 0;  transform: scale(1.22); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bgm:not(.is-playing)::after, .bgm.is-playing .bgm__ico { animation: none; }
+}
+
+/* ---------- 19. To-top ---------- */.totop {
   position: fixed; right: 24px; bottom: 24px; z-index: 140;
   width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
   background: var(--zhu); color: #fff; box-shadow: 0 10px 30px rgba(158,43,37,.4);
@@ -752,7 +801,11 @@ li { margin: .35em 0; }
   .gallery { grid-template-columns: 1fr; }
   .shot--wide { grid-column: span 1; aspect-ratio: 4/3; }
   .shot--tall { grid-row: span 1; aspect-ratio: 4/3; }
-  .hero__cta { flex-direction: column; align-items: stretch; }
+  /* 窄屏只留图标，避免与「回到顶部」一起挤占底部 */
+  .bgm { left: 16px; bottom: 18px; padding: 12px; gap: 0; }
+  .bgm__txt { display: none; }
+  .bgm__ico { font-size: 17px; }
+  .totop { right: 16px; bottom: 18px; }
   .modal { padding: 0; align-items: flex-end; }
   .modal__box { max-height: 92svh; border-radius: var(--radius) var(--radius) 0 0; }
   .modal__hero { padding: 30px 22px 20px; }
@@ -762,7 +815,7 @@ li { margin: .35em 0; }
   .video-card--main, .video-card--side { aspect-ratio: 16/10; }
 }
 @media print {
-  .nav, .progress, .totop, .hero__scroll, .modal, .lightbox { display: none !important; }
+  .nav, .progress, .totop, .bgm, .hero__scroll, .modal, .lightbox { display: none !important; }
   .section { padding: 20px 0; break-inside: avoid; }
   body { font-size: 12pt; }
 }

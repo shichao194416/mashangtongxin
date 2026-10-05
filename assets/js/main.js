@@ -9,6 +9,66 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* ---------------------------------------------------------------- 0. 音效
+     六骏各有一段专属音效，其余交互统一用「点击音效」。
+     · 默认开启，页脚有开关，选择记在 localStorage。
+     · 音频一律在用户交互之后才播，天然规避浏览器自动播放拦截。
+     · 尊重 prefers-reduced-motion：系统要求减少动效时默认静音。 */
+  var SFX = (function () {
+    var KEY = 'mstx-sound';
+    var enabled = !reduce;
+    try {
+      var saved = localStorage.getItem(KEY);
+      if (saved === 'off') enabled = false;
+      else if (saved === 'on') enabled = true;
+    } catch (e) {}
+    var BASE = 'assets/audio/';
+    var pool = {};
+    var lastClick = 0;
+
+    function get(name) {
+      if (!pool[name]) {
+        var a = new Audio(BASE + name + '.mp3');
+        a.preload = 'auto';
+        a.volume = (name === 'click') ? 0.45 : 0.85;
+        pool[name] = a;
+      }
+      return pool[name];
+    }
+
+    return {
+      play: function (name) {
+        if (!enabled || !name) return;
+        var now = Date.now();
+        if (name === 'click') {
+          if (now - lastClick < 110) return;   /* 连点去抖 */
+          lastClick = now;
+        }
+        try {
+          var a = get(name);
+          a.currentTime = 0;
+          var p = a.play();
+          if (p && p.catch) p.catch(function () {});
+        } catch (e) {}
+      },
+      isOn: function () { return enabled; },
+      toggle: function () {
+        enabled = !enabled;
+        try { localStorage.setItem(KEY, enabled ? 'on' : 'off'); } catch (e) {}
+        if (enabled) this.play('click');
+        return enabled;
+      }
+    };
+  })();
+
+  /* 统一挂点击音：六骏卡片自己有专属音效，跳过以免叠音 */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest ? e.target.closest('button, .btn, a[href^="#"]') : null;
+    if (!el) return;
+    if (el.closest('.horse')) return;
+    SFX.play('click');
+  }, true);
+
   /* ---------------------------------------------------------------- 1. 导航 */
   var nav = $('#nav');
   var navToggle = $('#navToggle');
@@ -133,6 +193,7 @@
     var h = HORSES[i];
     if (!h) return;
     hmCurrent = i;
+    SFX.play(h.art);   /* 每一骏一段专属音效 */
     $('#hmHero').style.background = 'linear-gradient(135deg,' + h.color + ',' + shade(h.color, -22) + ')';
     $('#hmSide').textContent = h.side;
     $('#hmName').textContent = h.name;
@@ -350,5 +411,122 @@
       img.style.minHeight = '80px';
     });
   });
+
+  /* ------------------------------------------------- 13. 页脚音效开关 */
+  var sfxBtn = $('#sfxToggle');
+  if (sfxBtn) {
+    var sfxTxt = $('.sfx-toggle__txt', sfxBtn);
+    var paintSfx = function () {
+      var on = SFX.isOn();
+      sfxBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (sfxTxt) sfxTxt.textContent = on ? '音效已开启' : '音效已关闭';
+    };
+    sfxBtn.addEventListener('click', function () { SFX.toggle(); paintSfx(); });
+    paintSfx();
+  }
+
+  /* ------------------------------------------------- 14. 背景音乐
+     目标：打开网页即播，按钮负责「暂停 / 继续」。
+     浏览器的自动播放策略会拦截带声音的自动播放，硬来只会得到一个静音播放器，
+     所以这里用「两手准备」：
+       ① 载入时先直接 play() 一次（对已与本域产生过互动的访客、以及部分浏览器会成功）；
+       ② 被拦截时，挂上首次交互监听（点击 / 按键 / 触摸 / 滚轮 / 滚动），
+          用户一动就把音乐接上 —— 实际效果等同于「打开就放」。
+     一旦音乐真正响起，就解绑这些监听：这样用户之后主动按暂停，
+     不会因为再滚一下页面又被强行续播。 */
+  var bgmBtn = $('#bgmToggle');
+  if (bgmBtn) {
+    var bgm = new Audio('assets/audio/bgm.m4a');
+    bgm.loop = true;
+    bgm.volume = 0;
+    bgm.preload = 'auto';
+    var BGM_VOL = 0.32, bgmTimer = null, bgmOn = false, bgmArmed = true;
+
+    function bgmFadeTo(to) {
+      if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; }
+      if (to === 0 && bgm.volume === 0) { bgm.pause(); return; }
+      bgmTimer = setInterval(function () {
+        var d = to - bgm.volume;
+        if (Math.abs(d) < 0.02) {
+          bgm.volume = to;
+          clearInterval(bgmTimer); bgmTimer = null;
+          if (to === 0) bgm.pause();
+          return;
+        }
+        bgm.volume = Math.max(0, Math.min(1, bgm.volume + d * 0.16));
+      }, 40);
+    }
+
+    function paintBgm() {
+      bgmBtn.classList.toggle('is-playing', bgmOn);
+      bgmBtn.setAttribute('aria-pressed', bgmOn ? 'true' : 'false');
+      bgmBtn.setAttribute('aria-label', (bgmOn ? '暂停' : '播放') + '背景音乐《古道尘远》');
+      var t = $('.bgm__txt', bgmBtn);
+      if (t) t.textContent = bgmOn ? '暂停音乐' : '背景音乐';
+    }
+
+    var BGM_AUTO_EVENTS = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'scroll'];
+
+    function bgmAutoKick(e) {
+      /* 点在音乐按钮上时交给按钮自己处理，避免「一按就播、紧接着又被判成暂停」 */
+      if (e && e.target && e.target.closest && e.target.closest('#bgmToggle')) return;
+      if (bgmArmed && !bgmOn) bgmStart();
+    }
+    function bgmUnbindAuto() {
+      BGM_AUTO_EVENTS.forEach(function (ev) {
+        window.removeEventListener(ev, bgmAutoKick);
+        window.removeEventListener(ev, bgmAutoKick, true);
+      });
+    }
+    function bgmBindAuto() {
+      BGM_AUTO_EVENTS.forEach(function (ev) {
+        window.addEventListener(ev, bgmAutoKick, { passive: true });
+      });
+    }
+
+    function bgmStart() {
+      bgmOn = true; paintBgm();
+      var p = bgm.play();
+      if (p && p.then) {
+        p.then(function () {
+          bgmArmed = false; bgmUnbindAuto(); bgmFadeTo(BGM_VOL);
+        }).catch(function () {
+          /* 仍被拦截：退回「未播放」，等下一次交互再试 */
+          bgmOn = false; paintBgm();
+        });
+      } else {
+        bgmArmed = false; bgmUnbindAuto(); bgmFadeTo(BGM_VOL);
+      }
+    }
+
+    function bgmStop() {
+      bgmOn = false; paintBgm();
+      bgmFadeTo(0);
+    }
+
+    bgmBtn.addEventListener('click', function () {
+      if (bgmOn) bgmStop(); else bgmStart();
+    });
+
+    /* ① 先直接试一次；② 无论成败都挂上首次交互监听（成功时会在回调里解绑） */
+    bgmBindAuto();
+    bgmStart();
+    paintBgm();
+
+    /* 页面里任何视频开始播放时让位，暂停或播完再淡回来 */
+    function bgmYield() { if (bgmOn && !bgm.paused) bgm.pause(); }
+    function bgmResume() { if (bgmOn && bgm.paused) { var p = bgm.play(); if (p && p.catch) p.catch(function () {}); } }
+    $$('video').forEach(function (v) {
+      v.addEventListener('play', bgmYield);
+      v.addEventListener('pause', function () { if (!v.ended) bgmResume(); });
+      v.addEventListener('ended', bgmResume);
+    });
+    /* 视频弹窗里的播放器是动态换 src 的，单独再挂一次 */
+    var vp = $('#videoPlayer');
+    if (vp) {
+      vp.addEventListener('play', bgmYield);
+      vp.addEventListener('pause', bgmResume);
+    }
+  }
 
 })();
