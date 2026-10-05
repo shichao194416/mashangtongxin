@@ -314,16 +314,23 @@ li { margin: .35em 0; }
 .honor--seal figcaption { text-align: center; }
 
 /* ---------- 9e. 实践团总海报（成果展示） ----------
-   海报是竖构图（1279×1810），若让文字栏占满剩余宽度，文字会比海报矮一大截，
-   上下各空出一百多像素。做法：两栏收窄到接近正方比例并居中——
-   海报 420 宽时高约 594，文字栏 470 宽时高约 555，两端几乎齐平。 */
+   海报是竖构图（1279×1810，高宽比 1.415），而文字栏越宽越矮——想让两栏等高，
+   要么把海报缩成缩略图、要么把两栏缩窄居中（结果左右又空了）。都不合适。
+   这里改成：两栏占满整宽，右侧文字补足到与海报同高（见 index.html 的说明文案）。 */
 .poster-feature {
   display: grid;
-  grid-template-columns: minmax(0, 380px) minmax(0, 460px);
-  justify-content: center;
-  gap: clamp(28px, 4.2vw, 68px); align-items: center;
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  gap: clamp(26px, 3.6vw, 48px); align-items: center;
   margin: 0 0 clamp(34px, 4.4vw, 54px);
 }
+/* 三段实践路径用列表呈现，比挤在一段里有呼吸感，也更撑得起海报那一栏的高度 */
+.poster-feature__path { list-style: none; padding: 0; margin: 0 0 4px; display: grid; gap: 10px; }
+.poster-feature__path li {
+  margin: 0; padding: 11px 16px; border-radius: var(--radius-sm);
+  background: rgba(246,239,220,.55); border: 1px solid rgba(169,130,44,.24);
+  font-size: 15px; line-height: 1.85; color: var(--ink-2);
+}
+.poster-feature__path b { color: var(--zhu); font-family: var(--font-serif); }
 .poster-feature > img {
   width: 100%; height: auto; display: block;
   border-radius: var(--radius); border: 1px solid var(--line);
