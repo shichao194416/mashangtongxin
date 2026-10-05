@@ -353,13 +353,21 @@ li { margin: .35em 0; }
 .prose { font-size: 16px; color: var(--ink-2); }
 .prose p { margin-bottom: 1.15em; text-align: justify; text-indent: 2em; }
 .prose strong { color: var(--ink); font-weight: 700; }
-/* 同一段正文不要一大一小：不做“导语放大”，全篇字号统一 *//* 首行缩进：正文、导语、卡片说明、时间轴、引言、图注统一 2 字，仅纯标签类不缩进 */
-.section__lead, .card__text, .tl__text, .quote, figcaption, .prose-cols > p { text-indent: 2em; }
+/* 同一段正文不要一大一小：不做“导语放大”，全篇字号统一 */
+/* 首行缩进（2026-10-05 全站统一）：
+   正文以中文为主，2em 恰为两个汉字宽。做法是「所有正文段落默认缩进，
+   纯标签/词组类显式重置为 0」，避免每加一段正文都要回来补一条规则。
+   注意 .prose 只是容器，写在自己身上的 <p class="prose"> 需要单列。 */
+main p, footer p, .prose p, .section__lead, .card__text, .tl__text, .quote,
+figcaption, .prose-cols > p, .game__text, .poster-feature__txt p { text-indent: 2em; }
 /* 纯标签/词组不缩进 */
 .pill-list, .honor-list, .member-bar__id, .hero__sub, .eyebrow,
 .horse__side, .horse__name, .horse__praise, .horse__meta, .horse__more,
 .member b, .member span, .member em, .attr dt, .attr dd, .stat__label, .stat__num,
-.ministat dt, .ministat dd, .playloop span, .tl__date, .tl__title, .grid--3 .card__title { text-indent: 0; }
+.ministat dt, .ministat dd, .playloop span, .tl__date, .tl__title, .grid--3 .card__title,
+.gallery-label, .shot__cap, .game__title, .game__steps, .honor figcaption span,
+.gate__sub, .gate__note, .modal__side, .modal__name, .modal__praise, .lightbox__cap,
+.eyebrow, .footer__bottom span, .honors__caption { text-indent: 0; }
 
 /* ---------- 9b. 平衡双栏（消除栏底空白） ----------
    问题：图片列按栏宽铺满后远高于正文列，正文下方留出大片空白。
