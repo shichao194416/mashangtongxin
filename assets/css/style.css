@@ -287,6 +287,60 @@ li { margin: .35em 0; }
 }
 .card--logo > div { flex: 1 1 320px; min-width: 0; }
 
+/* ---------- 9d. 团队荣誉配图卡片（修改书第 5 条） ---------- */
+.honors__head {
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(0, 400px);
+  gap: 28px; align-items: end; margin-bottom: 24px;
+}
+.honors__banner { margin: 0; }
+.honors__banner img {
+  width: 100%; height: auto; aspect-ratio: 4/3; object-fit: cover;
+  border-radius: var(--radius); border: 1px solid var(--line);
+}
+.honors__banner figcaption { font-size: 12.5px; color: var(--ink-3); margin-top: 9px; }
+
+.honors { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px; }
+.honor {
+  margin: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  overflow: hidden; box-shadow: inset 0 0 0 1px rgba(169,130,44,.13);
+  display: flex; flex-direction: column; cursor: pointer;
+  transition: transform .28s var(--ease), box-shadow .28s var(--ease), border-color .28s;
+}
+.honor:hover { transform: translateY(-4px); box-shadow: var(--shadow-2); border-color: #cdbfa9; }
+.honor img { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: var(--paper-2); }
+.honor figcaption { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 5px; flex: 1 1 auto; }
+.honor figcaption b { font-family: var(--font-serif); font-size: 15px; color: var(--ink); font-weight: 700; line-height: 1.45; }
+.honor figcaption span { font-family: var(--font-serif); font-size: 14px; color: var(--zhu); letter-spacing: .04em; margin-top: auto; padding-top: 4px; }
+/* 暂无照片的荣誉：用朱红印章卡占位，视觉上仍是完整一张卡（照片到位后替换即可） */
+.honor--seal { justify-content: center; align-items: center; background: linear-gradient(160deg, #fdf8ef 0%, #f6ead3 100%); cursor: default; }
+.honor--seal:hover { transform: none; box-shadow: inset 0 0 0 1px rgba(169,130,44,.13); border-color: var(--line); }
+.honor__seal {
+  width: 74px; height: 74px; border-radius: 14px; display: grid; place-items: center;
+  background: linear-gradient(160deg, #b8352c, #8c231d); color: #fff;
+  font-family: var(--font-display); font-size: 42px;
+  box-shadow: 0 8px 22px rgba(158,43,37,.28); margin: 30px auto 0;
+}
+.honor--seal figcaption { text-align: center; }
+
+/* ---------- 9e. 实践团总海报（成果展示） ---------- */
+.poster-feature {
+  display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  gap: clamp(26px, 3.6vw, 48px); align-items: center;
+  margin: 0 0 clamp(34px, 4.4vw, 54px);
+}
+.poster-feature > img {
+  width: 100%; height: auto; display: block;
+  border-radius: var(--radius); border: 1px solid var(--line);
+  box-shadow: 0 18px 44px rgba(28,25,23,.14);
+  cursor: zoom-in;
+}
+.poster-feature__txt h3 { font-size: clamp(21px, 2.6vw, 27px); margin-bottom: 14px; letter-spacing: .05em; }
+.poster-feature__txt p { font-size: 15.5px; color: var(--ink-2); line-height: 1.9; }
+.poster-feature__quote {
+  font-family: var(--font-serif); color: var(--zhu) !important;
+  border-left: 2px solid var(--jin-2); padding-left: 14px; margin-top: 18px;
+}
+
 /* 特展卡内的三个关键数字（数值均取自正文，非新增信息） */
 .ministat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0 4px; }
 .ministat > div { text-align: center; padding: 12px 6px; background: var(--paper-2); border-radius: var(--radius-sm); }
@@ -730,6 +784,58 @@ li { margin: .35em 0; }
   .bgm:not(.is-playing)::after, .bgm.is-playing .bgm__ico { animation: none; }
 }
 
+/* ---------- 18e. 进场封面（背景音乐入口） ----------
+   浏览器规定没有用户手势就不许带声音播放，所以用一道封面接住第一次点击。
+   那一次点击既是「进入」，也是启动音乐的合法手势。 */
+.gate {
+  position: fixed; inset: 0; z-index: 300;
+  display: grid; place-items: center; overflow: hidden;
+  background: #14100a;
+  transition: opacity .75s var(--ease), visibility .75s;
+}
+.gate.is-out { opacity: 0; visibility: hidden; pointer-events: none; }
+.gate__bg { position: absolute; inset: 0; }
+.gate__bg img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: blur(3px) saturate(.85); opacity: .5; transform: scale(1.05);
+}
+.gate::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(62% 62% at 50% 44%, rgba(20,16,10,.30) 0%, rgba(13,10,6,.90) 100%);
+}
+.gate__inner { position: relative; z-index: 1; text-align: center; color: #fff; padding: 26px; }
+.gate__seal {
+  width: 84px; height: 84px; border-radius: 50%; margin: 0 auto 24px; display: block;
+  box-shadow: 0 0 0 5px rgba(201,162,39,.32), 0 16px 44px rgba(0,0,0,.55);
+}
+.gate__title {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(44px, 7.6vw, 86px); line-height: 1.05;
+  letter-spacing: .14em; text-indent: .14em; margin: 0 0 12px;
+  text-shadow: 0 0 46px rgba(201,162,39,.34), 0 6px 34px rgba(0,0,0,.62);
+}
+.gate__sub {
+  font-family: var(--font-serif); font-size: clamp(15px, 2vw, 19px);
+  letter-spacing: .3em; text-indent: .3em; color: var(--jin-2); margin: 0 0 44px;
+}
+.gate__btn {
+  display: inline-flex; align-items: center; gap: 11px;
+  padding: 15px 36px; border-radius: 999px;
+  border: 1px solid rgba(201,162,39,.55); background: rgba(201,162,39,.13);
+  color: #f3e7ce; font-family: var(--font-serif); font-size: 16px;
+  letter-spacing: .22em; text-indent: .22em;
+  transition: background .25s, border-color .25s, transform .25s var(--ease), color .25s;
+  animation: gatePulse 2.6s var(--ease) infinite;
+}
+.gate__btn:hover { background: rgba(201,162,39,.26); border-color: var(--jin-2); color: #fff; transform: translateY(-2px); }
+.gate__ico { font-size: 17px; line-height: 1; }
+@keyframes gatePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,162,39,.34); }
+  70%      { box-shadow: 0 0 0 16px rgba(201,162,39,0); }
+}
+.gate__note { font-size: 12.5px; color: rgba(255,255,255,.5); letter-spacing: .1em; margin: 22px 0 0; }
+@media (prefers-reduced-motion: reduce) { .gate__btn { animation: none; } }
+
 /* ---------- 19. To-top ---------- */.totop {
   position: fixed; right: 24px; bottom: 24px; z-index: 140;
   width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
@@ -762,6 +868,10 @@ li { margin: .35em 0; }
 }
 @media (max-width: 900px) {
   .grid.grid--photos { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .honors__head { grid-template-columns: 1fr; gap: 20px; align-items: start; }
+  .honors { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .poster-feature { grid-template-columns: 1fr; gap: 22px; }
+  .poster-feature > img { max-width: 440px; margin-inline: auto; }
   .nav__links {
     position: fixed; inset: var(--nav-h) 0 auto 0; flex-direction: column; align-items: stretch;
     gap: 0; padding: 12px 18px 22px; margin: 0;
@@ -789,6 +899,7 @@ li { margin: .35em 0; }
 }
 @media (max-width: 620px) {
   body { font-size: 16px; }
+  .honors { grid-template-columns: 1fr; }
   .grid.grid--photos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .container { padding-inline: 18px; }
   .stats__grid { grid-template-columns: repeat(2, 1fr); }

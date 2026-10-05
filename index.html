@@ -20,6 +20,35 @@
 </head>
 <body>
 
+<!-- ==================== 进场封面（背景音乐入口） ====================
+     浏览器规定：没有用户手势就不允许带声音播放。所以用一道封面接住
+     用户的第一次点击——那次点击既是「进入」，也是启动音乐的合法手势。
+     不用 JS 时（noscript）封面自动隐藏，不会挡住内容。 -->
+<div class="gate" id="gate">
+  <div class="gate__bg"><img src="assets/img/hero-keyvisual-1200.webp" alt=""></div>
+  <div class="gate__inner">
+    <img class="gate__seal" src="assets/img/emblem.webp" alt="">
+    <h2 class="gate__title">马上同心</h2>
+    <p class="gate__sub">同心共铸 · 神骏新传</p>
+    <button class="gate__btn" id="gateEnter" type="button">
+      <span class="gate__ico" aria-hidden="true">♪</span><span>点击进入</span>
+    </button>
+    <p class="gate__note">进入后将播放背景音乐《古道尘远》</p>
+  </div>
+</div>
+<noscript><style>.gate{display:none !important}</style></noscript>
+<script>
+/* 保险丝：仅当主脚本确实没跑起来（未置 __mstxReady）时才放行，
+   避免「用户还没点、封面就自己消失」。 */
+setTimeout(function () {
+  var g = document.getElementById('gate');
+  if (g && !window.__mstxReady && !g.dataset.handled) {
+    g.classList.add('is-out');
+    document.body.classList.remove('is-locked');
+  }
+}, 5000);
+</script>
+
 <div class="progress" id="progress" aria-hidden="true"></div>
 
 <!-- ==================== 导航 ==================== -->
@@ -167,17 +196,46 @@
       <p style="font-size:13.5px;color:var(--ink-3);margin-top:14px">指导教师：许丽英、杨雨璇</p>
     </div>
 
-    <div class="card" style="margin-top:clamp(40px,5vw,64px);border-left:3px solid var(--zhu)" data-reveal>
-      <h3 style="font-size:21px;margin-bottom:16px">团队荣誉</h3>
-      <ul class="prose honor-list">
-        <li>2026 年寒假社会实践<strong>校级优秀团队</strong></li>
-        <li>故宫<strong>志愿十佳志愿者</strong></li>
-        <li>「墨韵书香话马韵，阅古寻根铸同心」读书创作大赛<strong>三等奖</strong></li>
-        <li>「紫禁红韵·同心铸魂」演讲比赛<strong>一等奖</strong></li>
-        <li>创新训练营<strong>二等奖</strong></li>
-        <li>自主开发<strong>阙虎骝 Ren'Py 互动小游戏</strong></li>
-      </ul>
-      <div class="quote" style="font-size:18px;margin-bottom:0">马上同心深挖马文化，走遍边疆大地，讲透各民族马背交往交流交融故事。</div>
+    <div style="margin-top:clamp(40px,5vw,64px)" data-reveal>
+      <div class="honors__head">
+        <div>
+          <h3 style="font-size:21px;margin-bottom:8px">团队荣誉</h3>
+          <p style="color:var(--ink-3);font-size:15px;max-width:620px;margin:0">六项荣誉，六段并肩走过的路——从故宫的红墙到张家川的课堂。</p>
+        </div>
+        <figure class="honors__banner">
+          <img src="assets/img/honor-02-volunteer-cert.webp" alt="故宫博物院「来！听色彩讲故事」教育体验展志愿服务项目「十佳志愿者」荣誉证书" loading="lazy">
+          <figcaption>故宫博物院「来！听色彩讲故事」教育体验展 · 十佳志愿者荣誉证书（2026.05.23）</figcaption>
+        </figure>
+      </div>
+
+      <div class="honors">
+        <figure class="honor" data-full="assets/img/honor-01-ceremony.webp" data-cap="十佳志愿者表彰大会暨读书创作大赛成果交流会现场（2026.06.12）。">
+          <img src="assets/img/honor-01-ceremony.webp" alt="十佳志愿者表彰大会暨读书创作大赛成果交流会现场" loading="lazy">
+          <figcaption><b>2026 年寒假社会实践</b><span>校级优秀团队</span></figcaption>
+        </figure>
+        <figure class="honor" data-full="assets/img/honor-02b-gugong-service.webp" data-cap="故宫博物院「来！听色彩讲故事」教育体验展志愿服务岗。团队在故宫博物院「来！听色彩讲故事」教育体验展志愿服务项目中荣获十佳志愿者。">
+          <img src="assets/img/honor-02b-gugong-service.webp" alt="实践团成员在故宫博物院教育体验展志愿服务岗" loading="lazy">
+          <figcaption><b>故宫博物院「来！听色彩讲故事」教育体验展</b><span>志愿十佳志愿者</span></figcaption>
+        </figure>
+        <figure class="honor" data-full="assets/img/honor-03-reading-cert.webp" data-cap="「墨韵书香话马韵，阅古寻根铸同心」读书创作大赛三等奖荣誉证书（证书编号 261032121029）。">
+          <img src="assets/img/honor-03-reading-cert.webp" alt="读书创作大赛三等奖荣誉证书" loading="lazy">
+          <figcaption><b>「墨韵书香话马韵，阅古寻根铸同心」</b><span>读书创作大赛三等奖</span></figcaption>
+        </figure>
+        <figure class="honor" data-full="assets/img/honor-04-speech-cert.webp" data-cap="2025-2026 学年春季学期中央民族大学教育学院「紫禁红韵·同心铸魂」演讲比赛一等奖荣誉证书。">
+          <img src="assets/img/honor-04-speech-cert.webp" alt="「紫禁红韵·同心铸魂」演讲比赛一等奖荣誉证书" loading="lazy">
+          <figcaption><b>「紫禁红韵 · 同心铸魂」</b><span>演讲比赛一等奖</span></figcaption>
+        </figure>
+        <figure class="honor honor--seal">
+          <div class="honor__seal">创</div>
+          <figcaption><b>中央民族大学</b><span>创新训练营二等奖</span></figcaption>
+        </figure>
+        <figure class="honor" data-full="assets/img/honor-06-game-screenshot.webp" data-cap="自主开发的阙虎骝 Ren'Py 互动小游戏：以故宫院藏郎世宁《阚虎骝图》为原型，把书画中的骏马做成可对话、可探索的互动叙事。">
+          <img src="assets/img/honor-06-game-screenshot.webp" alt="阙虎骝 Ren'Py 互动小游戏截图" loading="lazy">
+          <figcaption><b>阙虎骝 Ren'Py</b><span>互动小游戏（自主开发）</span></figcaption>
+        </figure>
+      </div>
+
+      <div class="quote" style="font-size:18px;margin:28px 0 0">马上同心深挖马文化，走遍边疆大地，讲透各民族马背交往交流交融故事。</div>
     </div>
 
     <div class="card card--logo" style="margin-top:22px;border-left:3px solid var(--jin)" data-reveal>
@@ -672,6 +730,17 @@
       <h2 class="section__title">成果<em>展示</em></h2>
       <p class="section__lead">成果之间互相关联、彼此支撑，构成从认知到传播的完整链条。</p>
     </div>
+
+    <figure class="poster-feature" data-full="assets/img/poster-cemachuanwenmai.webp" data-cap="实践团总海报《策马传文脉 同心聚石榴》——以昭陵六骏为原型，六骏正比与 Q 版双轨形象，并完整呈现博物馆研学 → 集中宣讲 → 广场推广三段实践路径。">
+      <img src="assets/img/poster-cemachuanwenmai.webp" alt="实践团总海报《策马传文脉 同心聚石榴》：以昭陵六骏为原型的正比与 Q 版形象，并呈现博物馆研学、集中宣讲、广场推广三段实践路径" loading="lazy">
+      <div class="poster-feature__txt">
+        <p class="eyebrow">Key Visual</p>
+        <h3>策马传文脉 · 同心聚石榴</h3>
+        <p>实践团总海报。以昭陵六骏石刻为原型，严格依据史料还原毛色、姿态与箭伤位置，再由李世民亲撰赞语提炼出六种自然元素——飒露紫·露，拳毛騧·月，白蹄乌·云，特勒骠·光，青骓·电，什伐赤·火。</p>
+        <p>海报同时呈现三段实践路径：<strong>博物馆研学</strong>——赴马家塬车舆博物馆实地研学；<strong>集中宣讲</strong>——面向当地青少年开展集中宣讲，辅以自主开发的「六马小子」翻翻乐与「飞花令」诗词擂台；<strong>广场推广</strong>——广场摆摊设点，以游戏挑战、拼图协作、图文展示吸引民众参与。</p>
+        <p class="poster-feature__quote">技术是桥梁，不是目的。从战国马家塬车马坑到唐代昭陵六骏，我们以数字交互激活文化基因，让文物故事以更轻盈的姿态走进当代生活。</p>
+      </div>
+    </figure>
 
     <div class="split">
       <div class="prose" data-reveal>

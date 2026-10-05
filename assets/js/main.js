@@ -435,6 +435,7 @@
      一旦音乐真正响起，就解绑这些监听：这样用户之后主动按暂停，
      不会因为再滚一下页面又被强行续播。 */
   var bgmBtn = $('#bgmToggle');
+  var bgmStartExternal = function () {};   /* 供进场封面调用 */
   if (bgmBtn) {
     var bgm = new Audio('assets/audio/bgm.m4a');
     bgm.loop = true;
@@ -503,6 +504,7 @@
       bgmOn = false; paintBgm();
       bgmFadeTo(0);
     }
+    bgmStartExternal = bgmStart;
 
     bgmBtn.addEventListener('click', function () {
       if (bgmOn) bgmStop(); else bgmStart();
@@ -528,5 +530,38 @@
       vp.addEventListener('pause', bgmResume);
     }
   }
+
+  /* ------------------------------------------------- 15. 进场封面
+     浏览器规定「没有用户手势就不许带声音播放」，所以用一道封面接住第一次点击：
+     这一次点击既是「进入网站」，也是启动背景音乐的合法手势。
+     做了三道保险：① 用户未操作时锁住滚动；② 5 秒兜底（见 HTML 内联脚本）；
+     ③ 禁用 JS 时 noscript 直接把封面隐藏，绝不挡内容。 */
+  var gate = $('#gate');
+  if (gate) {
+    document.body.classList.add('is-locked');
+    var gateDone = false;
+
+    function enterSite() {
+      if (gateDone) return;
+      gateDone = true;
+      gate.dataset.handled = '1';
+      gate.classList.add('is-out');
+      document.body.classList.remove('is-locked');
+      bgmStartExternal();                     /* 手势内起播，必定成功 */
+      window.setTimeout(function () {
+        if (gate && gate.parentNode) gate.parentNode.removeChild(gate);
+      }, 900);
+    }
+
+    var gateBtn = $('#gateEnter');
+    if (gateBtn) gateBtn.addEventListener('click', function (e) { e.stopPropagation(); enterSite(); });
+    gate.addEventListener('click', enterSite);
+    gate.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enterSite(); }
+    });
+  }
+
+  /* 主脚本已完整执行（进场封面的内联保险丝会读这个标记） */
+  window.__mstxReady = true;
 
 })();
