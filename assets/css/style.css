@@ -313,10 +313,15 @@ li { margin: .35em 0; }
 }
 .honor--seal figcaption { text-align: center; }
 
-/* ---------- 9e. 实践团总海报（成果展示） ---------- */
+/* ---------- 9e. 实践团总海报（成果展示） ----------
+   海报是竖构图（1279×1810），若让文字栏占满剩余宽度，文字会比海报矮一大截，
+   上下各空出一百多像素。做法：两栏收窄到接近正方比例并居中——
+   海报 420 宽时高约 594，文字栏 470 宽时高约 555，两端几乎齐平。 */
 .poster-feature {
-  display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
-  gap: clamp(26px, 3.6vw, 48px); align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 380px) minmax(0, 460px);
+  justify-content: center;
+  gap: clamp(28px, 4.2vw, 68px); align-items: center;
   margin: 0 0 clamp(34px, 4.4vw, 54px);
 }
 .poster-feature > img {
@@ -379,6 +384,11 @@ figcaption, .prose-cols > p, .game__text, .poster-feature__txt p { text-indent: 
   gap: clamp(22px, 3vw, 40px);
   align-items: stretch;
 }
+
+/* 文字栏行距略松一点（1.85 → 2.05）。
+   右侧卡片/图片列的高度由内容决定，文字栏若按 1.85 排，会比它早结束 60～70px，
+   卡片下方就露出一截空白。加宽行距正好把这段差值吃掉，中文长文本来也更耐读。 */
+.split .prose { line-height: 2.05; }
 .split > * { min-width: 0; }
 .split--text { grid-template-columns: 1.28fr .72fr; }
 .split__media {
