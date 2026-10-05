@@ -297,6 +297,8 @@ li { margin: .35em 0; }
 }
 .honor:hover { transform: translateY(-4px); box-shadow: var(--shadow-2); border-color: #cdbfa9; }
 .honor img { width: 100%; aspect-ratio: 4/3; object-fit: cover; background: var(--paper-2); }
+/* 名单/公示类图片按 contain 显示，避免文字被裁掉 */
+.honor--doc img { object-fit: contain; background: #fdfbf6; }
 .honor figcaption { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 5px; flex: 1 1 auto; }
 .honor figcaption b { font-family: var(--font-serif); font-size: 15px; color: var(--ink); font-weight: 700; line-height: 1.45; }
 .honor figcaption span { font-family: var(--font-serif); font-size: 14px; color: var(--zhu); letter-spacing: .04em; margin-top: auto; padding-top: 4px; }
