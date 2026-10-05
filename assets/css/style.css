@@ -288,17 +288,6 @@ li { margin: .35em 0; }
 .card--logo > div { flex: 1 1 320px; min-width: 0; }
 
 /* ---------- 9d. 团队荣誉配图卡片（修改书第 5 条） ---------- */
-.honors__head {
-  display: grid; grid-template-columns: minmax(0,1fr) minmax(0, 400px);
-  gap: 28px; align-items: end; margin-bottom: 24px;
-}
-.honors__banner { margin: 0; }
-.honors__banner img {
-  width: 100%; height: auto; aspect-ratio: 4/3; object-fit: cover;
-  border-radius: var(--radius); border: 1px solid var(--line);
-}
-.honors__banner figcaption { font-size: 12.5px; color: var(--ink-3); margin-top: 9px; }
-
 .honors { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 20px; }
 .honor {
   margin: 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
@@ -868,7 +857,6 @@ li { margin: .35em 0; }
 }
 @media (max-width: 900px) {
   .grid.grid--photos { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .honors__head { grid-template-columns: 1fr; gap: 20px; align-items: start; }
   .honors { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .poster-feature { grid-template-columns: 1fr; gap: 22px; }
   .poster-feature > img { max-width: 440px; margin-inline: auto; }
