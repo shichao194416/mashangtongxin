@@ -565,7 +565,8 @@ setTimeout(function () {
         </figure>
       </div>
 
-      <div class="grid grid--3" style="margin-top:26px">
+      <!-- grid--fill 让两行等高：否则第一行 247px、第二行 330px，六张卡大小不一 -->
+      <div class="grid grid--3 grid--fill" style="margin-top:26px">
         <div class="card card--hover" data-reveal>
           <div class="card__icon">神</div>
           <h4 class="card__title">精神内涵</h4>
