@@ -237,12 +237,15 @@ li { margin: .35em 0; }
 
 /* ---------- 9. Cards & grids ---------- */
 .grid { display: grid; gap: 22px; }
-/* 卡片按内容高度收缩（align-items:start），而不是被拉伸到与同排最高者齐平。
-   拉平会让矮卡片顶对齐后底部留出空洞；收缩则既能让一排骨卡片图标成一条线，
-   又不产生空洞。需要「等高铺满」的网格用 .grid--fill 覆盖回 stretch。 */
-.grid--2 { grid-template-columns: repeat(2, minmax(0,1fr)); align-items: start; }
-.grid--3 { grid-template-columns: repeat(3, minmax(0,1fr)); align-items: start; }
-.grid--4 { grid-template-columns: repeat(4, minmax(0,1fr)); align-items: start; }
+/* 一排骨卡片一律等高（align-items 默认 stretch）。
+   曾经试过让卡片按内容收缩，结果文字只有一行的那张（如「技术设计组」）会比
+   邻居矮一截，看着像缺了一块——比底部多一点内边距更难接受。
+   所以：高度拉平靠 stretch，图标对齐靠 .card 的 justify-content:flex-start，
+   底部多出的空间由内容长度控制（别让同排卡片文字量差太多）。
+   需要「等高铺满」的图片网格用 .grid--fill。 */
+.grid--2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.grid--3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.grid--4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
 .card {
   position: relative;
   background: linear-gradient(180deg, #fffdfa 0%, #fffefc 100%);
