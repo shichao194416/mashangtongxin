@@ -343,6 +343,36 @@ li { margin: .35em 0; }
   font-size: 15px; line-height: 1.85; color: var(--ink-2);
 }
 .poster-feature__path b { color: var(--zhu); font-family: var(--font-serif); }
+
+/* ---------- 9f. 成果概览 · 标签式入口（修改意见 2 第 10 条） ----------
+   六张竖排金色标签是团队自己设计的成品图，直接拿来做可点击入口；
+   整块放在海报下面，作为「成果展示」的分类导览。 */
+.outcome-nav {
+  margin: 0 0 clamp(36px, 4.6vw, 58px);
+  padding: clamp(22px, 3vw, 34px) clamp(18px, 2.6vw, 30px) clamp(18px, 2.4vw, 26px);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #fdf8ef 0%, #f8efdd 100%);
+  border: 1px solid rgba(169,130,44,.26);
+  box-shadow: inset 0 0 0 1px rgba(169,130,44,.12);
+}
+.outcome-nav__title {
+  font-family: var(--font-serif); font-weight: 700;
+  font-size: clamp(17px, 2.1vw, 22px); color: var(--ink);
+  letter-spacing: .12em; text-align: center; margin: 0 0 clamp(16px, 2.2vw, 26px);
+}
+.outcome-nav__grid {
+  display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(10px, 1.6vw, 22px); align-items: end;
+}
+.outcome-tag {
+  display: block; border-radius: 10px;
+  transition: transform .26s var(--ease), filter .26s var(--ease);
+}
+.outcome-tag img { width: 100%; height: auto; display: block; }
+.outcome-tag:hover { transform: translateY(-6px); filter: drop-shadow(0 12px 22px rgba(169,130,44,.34)); }
+.outcome-tag:focus-visible { outline: 2px solid var(--zhu); outline-offset: 4px; }
+@media (max-width: 900px) { .outcome-nav__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .outcome-nav__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .poster-feature > img {
   width: 100%; height: auto; display: block;
   border-radius: var(--radius); border: 1px solid var(--line);

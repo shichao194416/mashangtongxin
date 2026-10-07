@@ -738,6 +738,21 @@ setTimeout(function () {
       </div>
     </figure>
 
+    <!-- 成果概览 · 标签式入口（团队修改意见 2 第 10 条）
+         六张竖排金色标签是团队自己设计的图，直接用作可点击入口，
+         每张点进去跳到对应的详细板块。 -->
+    <nav class="outcome-nav" aria-label="成果分类导航" data-reveal>
+      <p class="outcome-nav__title">「马上同心」实践团成果概览</p>
+      <div class="outcome-nav__grid">
+        <a class="outcome-tag" href="#outcome-media" aria-label="外源媒体拓宣 —— 查看"><img src="assets/img/tag-media.webp" alt="外源媒体拓宣 · 查看" loading="lazy"></a>
+        <a class="outcome-tag" href="#outcome-matrix" aria-label="新媒体矩阵 —— 查看"><img src="assets/img/tag-matrix.webp" alt="新媒体矩阵 · 查看" loading="lazy"></a>
+        <a class="outcome-tag" href="#outcome-creative" aria-label="文创成果 —— 查看"><img src="assets/img/tag-creative.webp" alt="文创成果 · 查看" loading="lazy"></a>
+        <a class="outcome-tag" href="#ip" aria-label="文化 IP 建设 —— 查看"><img src="assets/img/tag-ip.webp" alt="文化 IP 建设 · 查看" loading="lazy"></a>
+        <a class="outcome-tag" href="#course" aria-label="微课与游戏 —— 查看"><img src="assets/img/tag-course.webp" alt="微课与游戏 · 查看" loading="lazy"></a>
+        <a class="outcome-tag" href="#video" aria-label="数字影像纪实 —— 查看"><img src="assets/img/tag-video.webp" alt="数字影像纪实 · 查看" loading="lazy"></a>
+      </div>
+    </nav>
+
     <div class="split">
       <div class="prose" data-reveal>
         <p><strong>实践前期</strong>，团队依托中央民族大学与故宫博物院的馆校合作平台，系统参与了「同心共铸·神骏新传」青年文化共创计划，在故宫社教部指导下完成了马文化主题文物的学术积累，并产出了微课脚本、IP 设计初稿等前期成果，为实地实践奠定了扎实的内容基础。</p>
@@ -766,7 +781,7 @@ setTimeout(function () {
     </div>
 
     <!-- 文创 -->
-    <div style="margin-top:clamp(46px,5vw,66px)" data-reveal>
+    <div id="outcome-creative" style="margin-top:clamp(46px,5vw,66px);scroll-margin-top:96px" data-reveal>
       <h3 style="font-size:22px;margin-bottom:8px">文创产品</h3>
       <p class="quote" style="font-size:17px;margin-top:0">把千年石刻化为实物与数字周边，把文创变成宣讲课堂的教具，让文物故事看得见、摸得着。</p>
       <div class="ratio-row" style="grid-template-columns:1.19fr 0.703fr">
@@ -826,7 +841,7 @@ setTimeout(function () {
     </div>
 
     <!-- 传播矩阵 -->
-    <div style="margin-top:clamp(46px,5vw,66px)" data-reveal>
+    <div id="outcome-matrix" style="margin-top:clamp(46px,5vw,66px);scroll-margin-top:96px" data-reveal>
       <h3 style="font-size:22px;margin-bottom:10px">传播矩阵</h3>
       <p class="prose" style="max-width:880px">搭建跨平台新媒体传播矩阵，借助多样融媒体内容，传播昭陵六骏文化、中华民族共同体理念与实践团精神，致力于实现年轻化、线上化传播。</p>
       <div class="grid grid--4" style="margin-top:24px">
@@ -852,7 +867,7 @@ setTimeout(function () {
         </div>
       </div>
 
-      <div class="card card--hover card--jin" style="margin-top:22px">
+      <div id="outcome-media" class="card card--hover card--jin" style="margin-top:22px;scroll-margin-top:96px">
         <div class="card__icon">媒</div>
         <h4 class="card__title" style="font-size:17px">媒体外宣</h4>
           <p class="card__text">团队实践获多家媒体报道与转载：</p>
