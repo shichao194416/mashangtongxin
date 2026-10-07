@@ -96,7 +96,12 @@
     var y = window.scrollY || document.documentElement.scrollTop;
     var h = document.documentElement.scrollHeight - window.innerHeight;
     progress.style.width = (h > 0 ? Math.min(100, (y / h) * 100) : 0) + '%';
-    nav.classList.toggle('is-stuck', y > 12);
+    /* 导航条的「透明 → 米白磨砂」切换点放在滚出整个首屏之后，
+       这样停在首屏时导航完全不遮挡主视觉；一进正文立刻变实心保证可读。
+       首屏高度取 .hero 的实测高度，取不到就退回视口高度。 */
+    var heroEl = document.querySelector('.hero');
+    var heroH = (heroEl && heroEl.offsetHeight) || window.innerHeight;
+    nav.classList.toggle('is-stuck', y > heroH - nav.offsetHeight - 8);
     toTop.classList.toggle('is-on', y > 700);
     ticking = false;
   }

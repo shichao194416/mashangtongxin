@@ -130,15 +130,32 @@ li { margin: .35em 0; }
 .nav {
   position: fixed; inset: 0 0 auto 0; height: var(--nav-h); z-index: 150;
   display: flex; align-items: center;
-  /* 透明度压低（.72 → .38）：原来看不清底下的主视觉。改用更轻的模糊 + 更淡的底，
-     文字可读性靠字重与描边维持，而不是靠底色把图片压住。 */
-  background: rgba(251,248,243,.38);
-  backdrop-filter: saturate(150%) blur(9px);
-  -webkit-backdrop-filter: saturate(150%) blur(9px);
+  /* 首屏（还没滚出主视觉时）导航整条透明，完全不遮挡底图；
+     文字转为白色并加投影保证可读。滚出首屏后由 .is-stuck 接管，
+     变成米白磨砂条 + 深色文字，压在其他内容上依然清楚。
+     触发点见 main.js：以「滚过整个首屏」为界，而不是滚 12px 就变。 */
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border-bottom: 1px solid transparent;
   transition: background .3s var(--ease), border-color .3s var(--ease), box-shadow .3s var(--ease);
 }
-.nav.is-stuck { background: rgba(251,248,243,.84); border-bottom-color: var(--line); box-shadow: 0 6px 24px rgba(28,25,23,.06); }
+.nav.is-stuck {
+  background: rgba(251,248,243,.88);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  border-bottom-color: var(--line);
+  box-shadow: 0 6px 24px rgba(28,25,23,.06);
+}
+/* 透明态：深色主视觉上的白色导航 */
+.nav:not(.is-stuck) .nav__links a { color: rgba(255,255,255,.9); text-shadow: 0 1px 10px rgba(0,0,0,.55); }
+.nav:not(.is-stuck) .nav__links a:hover { color: #fff; background: rgba(255,255,255,.16); }
+.nav:not(.is-stuck) .nav__links a.is-active { color: #fff; }
+.nav:not(.is-stuck) .nav__links a.is-active::after { background: var(--jin-2); }
+.nav:not(.is-stuck) .nav__brand img { filter: drop-shadow(0 2px 8px rgba(0,0,0,.45)); }
+.nav:not(.is-stuck) .nav__toggle span,
+.nav:not(.is-stuck) .nav__toggle span::before,
+.nav:not(.is-stuck) .nav__toggle span::after { background: #fff; }
 .nav__inner { width: 100%; max-width: var(--container); margin-inline: auto; padding-inline: 24px; display: flex; align-items: center; gap: 20px; }
 .nav__brand { display: flex; align-items: center; gap: 11px; font-family: var(--font-serif); font-weight: 700; font-size: 19px; color: var(--ink); letter-spacing: .06em; flex-shrink: 0; }
 .nav__brand:hover { text-decoration: none; }
