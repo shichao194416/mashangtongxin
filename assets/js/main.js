@@ -570,3 +570,60 @@
   window.__mstxReady = true;
 
 })();
+/* ========== 内容概览：翻转卡、路线图、数据条 ========== */
+
+// 翻转卡点击翻转 + 音效
+const flipCards = document.querySelectorAll('.flip-card');
+flipCards.forEach(card => {
+  card.addEventListener('click', () => {
+    card.classList.toggle('flipped');
+    const sound = card.dataset.sound;
+    if (sound) {
+      const audio = new Audio(`assets/audio/six-horses/${sound}.mp3`);
+      audio.volume = 0.4;
+      audio.play().catch(() => {});
+    }
+  });
+});
+
+// 路线图点击
+const routeData = {
+  beijing: '北京·故宫：2026年4-6月，参与“同心共铸·神骏新传”青年文化共创计划，系统学习马主题文物与三交史。',
+  xian: '西安·碑林：2026年7月29日，实地考察昭陵六骏石刻真迹，看到青骓五处、什伐赤五处、拳毛騧九处箭伤。',
+  tianshui: '天水·张家川：2026年7月29日至31日，在行政中心广场、县博物馆、实践育人中心开展调研与宣讲。',
+  zhangjiachuan: '张家川实践地：面向18名青少年开展宣讲，收集书信56份，活动被中国教育报网和张家川团县委报道。'
+};
+
+document.querySelectorAll('.route-svg circle').forEach(circle => {
+  circle.addEventListener('click', () => {
+    const id = circle.dataset.id;
+    const detail = document.getElementById('route-detail');
+    detail.textContent = routeData[id] || '';
+    detail.style.opacity = '0';
+    setTimeout(() => { detail.style.opacity = '1'; }, 100);
+  });
+});
+
+// 数据条数字滚动
+const dataNums = document.querySelectorAll('.data-num');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      let current = 0;
+      const step = Math.ceil(target / 60);
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        el.textContent = current;
+      }, 25);
+      observer.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+
+dataNums.forEach(num => observer.observe(num));
