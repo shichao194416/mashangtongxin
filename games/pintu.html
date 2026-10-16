@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文物修复师 · 昭陵六骏拼图 ｜ 马上同心·文化信使</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            width: 100%;
+            min-height: 100vh;
+            font-family: "SimSun", "Microsoft Yahei", serif;
+        }
+        body {
+            /* 背景图片改成 assets/bjing.webp，居中铺满 */
+            background: #f8f1e4 url("assets/bjing.webp") center/cover no-repeat fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+        }
+
+        .page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 16px;
+            padding: 10px 0;
+        }
+        .page.active {
+            display: flex;
+        }
+
+        .古风按钮 {
+            padding: 12px 24px;
+            font-size: clamp(16px, 3.5vw, 20px);
+            font-family: SimSun;
+            border: 2px solid #915c38;
+            background: linear-gradient(#e6d5bc, #d4bc9c);
+            color: #5a2424;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            width: 100%;
+            max-width: 240px;
+        }
+        .古风按钮:active {
+            background: linear-gradient(#d4bc9c, #c9a87c);
+            transform: scale(0.97);
+        }
+        .古风按钮.小号 {
+            padding: 8px 16px;
+            font-size: clamp(13px, 2.8vw, 16px);
+            max-width: 160px;
+        }
+
+        .home-title {
+            text-align: center;
+            color: #6b2c2c;
+            font-size: clamp(30px, 6.5vw, 42px);
+            line-height: 1.5;
+            text-shadow: 1px 1px 0 #c9a87c, -1px -1px 0 #c9a87c, 1px -1px 0 #c9a87c, -1px 1px 0 #c9a87c, 2px 2px 6px rgba(90,
+                    40, 40, 0.25);
+            border-bottom: 2px solid #a87847;
+            padding-bottom: 12px;
+            width: 100%;
+            font-weight: 900;
+        }
+        .home-sub {
+            text-align: center;
+            font-size: clamp(16px, 3.2vw, 20px);
+            color: #6b2c2c;
+            line-height: 1.8;
+            background: rgba(255, 249, 238, 0.7);
+            padding: 16px 20px;
+            border-radius: 10px;
+            border: 1px dashed #a87847;
+            max-width: 360px;
+            margin: 0 10px;
+        }
+        .home-sub .highlight {
+            color: #b8860b;
+            font-weight: bold;
+            font-size: clamp(18px, 3.5vw, 22px);
+        }
+
+        .select-title {
+            text-align: center;
+            color: #6b2c2c;
+            font-size: clamp(22px, 4.8vw, 30px);
+            text-shadow: 1px 1px 2px #c9b89c;
+            border-bottom: 2px solid #a87847;
+            padding-bottom: 10px;
+            width: 100%;
+            font-weight: 900;
+        }
+        .select-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 420px;
+            margin: 6px auto;
+        }
+        .select-item {
+            aspect-ratio: 1 / 1;
+            border: 3px solid #a87847;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(90, 40, 40, 0.12);
+            background: #fff9ee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .select-item:active {
+            transform: scale(0.95);
+            border-color: #d4a558;
+        }
+        .select-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .select-item .select-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(107, 44, 44, 0.8);
+            color: #f7f2e7;
+            font-size: clamp(11px, 2.2vw, 14px);
+            text-align: center;
+            padding: 4px 0;
+            font-family: SimSun;
+            letter-spacing: 1px;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 420px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .game-header .game-info {
+            color: #6b2c2c;
+            font-size: clamp(14px, 3vw, 18px);
+            font-weight: bold;
+        }
+        .game-header .game-info span {
+            color: #b8860b;
+        }
+
+        .puzzle-area {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* ===== 拼图板 ===== */
+        .puzzle-board {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: rgba(212, 200, 184, 1);
+            border: 4px solid #a87847;
+            border-radius: 10px;
+            box-shadow: inset 0 0 30px rgba(90, 40, 40, 0.45);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 3px;
+            padding: 3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 参考图 - 放在最底层 */
+        .reference-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.25;
+            pointer-events: none;
+            z-index: 0;
+            border-radius: 6px;
+        }
+
+        .board-slot {
+            background: rgba(196, 184, 168, 0.15);
+            border-radius: 2px;
+            border: 1.5px dashed rgba(168, 152, 136, 0.35);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            z-index: 1;
+        }
+        .board-slot.highlight {
+            background: rgba(212, 200, 184, 0.3);
+            border-color: #d4a558;
+        }
+        .board-slot.filled {
+            border: 1.5px solid rgba(168, 152, 136, 0.5);
+            background: transparent;
+        }
+        .board-slot .slot-number {
+            color: rgba(168, 152, 136, 0.2);
+            font-size: clamp(10px, 2vw, 14px);
+            font-family: SimSun;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== 碎片池 ===== */
+        .piece-pool {
+            width: 100%;
+            min-height: 90px;
+            background: rgba(232, 221, 208, 0.8);
+            border: 2px solid #a87847;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+        }
+        .piece-pool .pool-label {
+            width: 100%;
+            text-align: center;
+            color: #8a7a6a;
+            font-size: clamp(12px, 2.5vw, 14px);
+            font-family: SimSun;
+            letter-spacing: 2px;
+        }
+
+        /* ===== 拼图碎片（方形） ===== */
+        .puzzle-piece {
+            width: 70px;
+            height: 70px;
+            background: #fff9ee;
+            border-radius: 2px;
+            background-size: 400% 400%;
+            background-position: var(--bg-pos);
+            cursor: grab;
+            position: relative;
+            touch-action: none;
+            box-shadow: 0 3px 10px rgba(90, 40, 40, 0.25);
+            border: 2px solid #a87847;
+            flex-shrink: 0;
+            transition: transform 0.15s;
+            z-index: 2;
+        }
+        .puzzle-piece:active {
+            cursor: grabbing;
+        }
+        .puzzle-piece.dragging {
+            z-index: 1000;
+            box-shadow: 0 8px 35px rgba(0, 0, 0, 0.4);
+            transform: scale(1.06) rotate(2deg);
+            opacity: 0.9;
+        }
+
+        /* 拼图板中的碎片 */
+        .board-slot .puzzle-piece {
+            width: 100%;
+            height: 100%;
+            border-radius: 2px;
+            border: 1px solid #a87847;
+            box-shadow: 0 1px 4px rgba(90, 40, 40, 0.15);
+            z-index: 2;
+        }
+
+        /* ===== 完成弹窗 ===== */
+        .puzzle-complete-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(107, 44, 44, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            border-radius: 8px;
+            z-index: 30;
+            padding: 20px;
+        }
+        .puzzle-complete-overlay.show {
+            display: flex;
+        }
+        .puzzle-complete-overlay .complete-icon {
+            font-size: clamp(48px, 10vw, 72px);
+        }
+        .puzzle-complete-overlay .complete-title {
+            color: #f7f2e7;
+            font-size: clamp(26px, 5.5vw, 38px);
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            font-weight: bold;
+            text-align: center;
+        }
+        .puzzle-complete-overlay .complete-sub {
+            color: #f7f2e7;
+            font-size: clamp(14px, 2.8vw, 18px);
+            opacity: 0.9;
+            text-align: center;
+            max-width: 90%;
+            line-height: 1.6;
+        }
+        .puzzle-complete-overlay .complete-desc {
+            color: #f7f2e7;
+            font-size: clamp(13px, 2.5vw, 16px);
+            opacity: 0.85;
+            text-align: center;
+            max-width: 90%;
+            line-height: 1.8;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin: 4px 0;
+        }
+
+        .game-bottom {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 420px;
+            flex-wrap: wrap;
+        }
+        .game-bottom .古风按钮 {
+            max-width: 180px;
+            padding: 10px 0;
+            font-size: clamp(14px, 3vw, 17px);
+        }
+
+        .mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 999;
+            backdrop-filter: blur(3px);
+        }
+        .mask.show {
+            display: flex;
+        }
+        .pop-box {
+            background: #f7f2e7;
+            border: 3px solid #915c38;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px 18px;
+            color: #442222;
+        }
+        .pop-title {
+            text-align: center;
+            font-size: clamp(20px, 4.5vw, 26px);
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #c9a87c;
+            color: #6b2c2c;
+            font-weight: 900;
+            text-shadow: 1px 1px 2px #c9b89c;
+        }
+        .pop-text {
+            line-height: 1.8;
+            font-size: clamp(14px, 3vw, 17px);
+        }
+        .pop-close {
+            margin-top: 16px;
+            width: 100%;
+            padding: 10px 0;
+        }
+
+        @media (max-width: 420px) {
+            .puzzle-piece {
+                width: 60px;
+                height: 60px;
+            }
+            .puzzle-board {
+                gap: 2px;
+                padding: 2px;
+            }
+        }
+        @media (max-width: 360px) {
+            .puzzle-piece {
+                width: 50px;
+                height: 50px;
+            }
+            .puzzle-board {
+                gap: 1.5px;
+                padding: 1.5px;
+            }
+            .piece-pool {
+                min-height: 65px;
+                padding: 4px;
+                gap: 4px;
+            }
+        }
+    
+/* ===== 站内二级页面：返回入口（由主站注入） ===== */
+.mstx-back{position:fixed;top:14px;left:14px;z-index:2000;display:inline-flex;align-items:center;gap:6px;
+padding:8px 14px;font-family:SimSun,serif;font-size:14px;line-height:1;color:#5a2424;
+background:linear-gradient(#f7f2e7,#e6d5bc);border:2px solid #915c38;border-radius:999px;
+box-shadow:0 4px 14px rgba(90,40,40,.25);text-decoration:none;letter-spacing:1px;
+transition:transform .2s,box-shadow .2s}
+.mstx-back:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(90,40,40,.32)}
+.mstx-back:active{transform:scale(.97)}
+@media(max-width:420px){.mstx-back{top:10px;left:10px;padding:6px 11px;font-size:12px;letter-spacing:0}}
+</style>
+</head>
+<body>
+<a class="mstx-back" href="../index.html#course" aria-label="返回马上同心网站「微课与游戏」">← 返回「微课与游戏」</a>
+    <div class="app-container">
+
+        <!-- 首页 -->
+        <div class="page active" id="homePage">
+            <h1 class="home-title">文物修复师<br>昭陵六骏拼图</h1>
+            <div class="home-sub">
+                🏛️ 尊敬的文物修复师，<br>
+                你接到了一个重要的任务——<br>
+                修复唐代 <span class="highlight">昭陵六骏</span> 石刻碎片。<br>
+                请选择一幅骏马图，<br>
+                将散落的碎片拼回原貌！
+            </div>
+            <button class="古风按钮" id="startBtn">开始修复</button>
+            <button class="古风按钮" id="ruleBtn">游戏规则</button>
+        </div>
+
+        <!-- 拼图选择页 -->
+        <div class="page" id="selectPage">
+            <h2 class="select-title">🏇 选择你要修复的骏马</h2>
+            <div class="select-grid" id="selectGrid"></div>
+            <button class="古风按钮 小号 select-back" id="selectBackBtn">← 返回</button>
+        </div>
+
+        <!-- 游戏页 -->
+        <div class="page" id="gamePage">
+            <div class="game-header">
+                <div class="game-info" id="gameTitle">修复中</div>
+                <div class="game-info">已拼：<span id="placedCount">0</span>/16</div>
+            </div>
+
+            <div class="puzzle-area">
+                <div class="puzzle-board" id="puzzleBoard">
+                    <div class="puzzle-complete-overlay" id="completeOverlay">
+                        <div class="complete-icon">🎉</div>
+                        <div class="complete-title" id="completeTitle">修复完成！</div>
+                        <div class="complete-sub" id="completeSub">你成功复原了昭陵六骏之一</div>
+                        <div class="complete-desc" id="completeDesc"></div>
+                        <button class="古风按钮 小号" id="completeContinueBtn">继续修复</button>
+                    </div>
+                </div>
+
+                <div class="piece-pool" id="piecePool">
+                    <div class="pool-label">🧩 碎片池 — 拖拽碎片到板上对应位置</div>
+                </div>
+            </div>
+
+            <div class="game-bottom">
+                <button class="古风按钮" id="shuffleBtn">🔀 重新打乱</button>
+                <button class="古风按钮" id="gameBackBtn">← 返回选择</button>
+            </div>
+        </div>
+
+        <!-- 规则弹窗 -->
+        <div class="mask" id="ruleMask">
+            <div class="pop-box">
+                <h3 class="pop-title">📜 修复指南</h3>
+                <div class="pop-text">
+                    <p><strong>🧑‍🔧 你的身份：</strong>唐代文物修复师</p><br>
+                    <p><strong>🎯 任务：</strong>将碎片池中的拼图碎片拖拽到拼图板上的正确位置。</p><br>
+                    <p><strong>🖱️ 操作方法：</strong></p>
+                    <p>· 从碎片池 <strong>拖拽</strong> 碎片到拼图板的槽位</p>
+                    <p>· 只有 <strong>正确</strong> 的碎片才能放入对应的槽位</p>
+                    <p>· 放错的碎片会自动弹回碎片池</p><br>
+                    <p><strong>💡 提示：</strong>拼图板上有半透明参考图，帮助你判断碎片位置</p><br>
+                    <p><strong>🏆 完成条件：</strong>16块碎片全部归位，拼图完整显示</p>
+                    <p>💡 <em>每一块碎片都承载着千年历史，请细心修复！</em></p>
+                </div>
+                <button class="古风按钮 pop-close" id="closeRuleBtn">知晓了</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================
+        // 数据：6 匹骏马
+        // ============================================================
+        const HORSE_DATA = [{
+            id: 0,
+            name: '白蹄乌',
+            img: 'assets/bai1.webp',
+            story: '白蹄乌是唐太宗平定薛仁杲时的坐骑，通体乌黑，唯独四蹄雪白。此马日行千里，骁勇善战，随李世民长途奔袭大破敌军，象征一往无前的征战气魄。'
+        }, {
+            id: 1,
+            name: '青骓',
+            img: 'assets/qing1.webp',
+            story: '青骓毛色青白相间，为李世民平定窦建德的战马。虎牢关一战，青骓身中五箭仍奋勇冲锋，是大唐开国关键战役的见证，代表忠勇不屈。'
+        }, {
+            id: 2,
+            name: '拳毛騧',
+            img: 'assets/quan1.webp',
+            story: '拳毛騧周身旋毛卷曲，黄黑相间，随李世民平定刘黑闼。激战中身中九箭，力竭而亡，石刻现存美国宾夕法尼亚大学博物馆，是流失海外的国宝。'
+        }, {
+            id: 3,
+            name: '飒露紫',
+            img: 'assets/sa1.webp',
+            story: '飒露紫意为"紫燕飞驰"，征讨王世充时战马。将军丘行恭为其拔箭的石刻画面极具故事性，同样流失海外，是昭陵六骏中最富人文故事的一骏。'
+        }, {
+            id: 4,
+            name: '什伐赤',
+            img: 'assets/sheng1.webp',
+            story: '什伐赤来自西域波斯，纯红骏马，征战王世充、窦建德两役，身中五箭，是丝绸之路文化交融的文物象征，见证唐代开放包容。'
+        }, {
+            id: 5,
+            name: '特勒骠',
+            img: 'assets/te1.webp',
+            story: '特勒骠为突厥进贡黄骠战马，毛色黄白。随李世民击败宋金刚，收复山西失地，战功赫赫，与青骓、什伐赤、白蹄乌同为留存国内的四骏，现藏西安碑林博物馆。'
+        }];
+
+        // ============================================================
+        // 状态
+        // ============================================================
+        let currentHorse = null;
+        let boardState = [];
+        let piecePool = [];
+        let placedCount = 0;
+        let isComplete = false;
+        let dragData = null;
+
+        // DOM 引用
+        const homePage = document.getElementById('homePage');
+        const selectPage = document.getElementById('selectPage');
+        const gamePage = document.getElementById('gamePage');
+        const selectGrid = document.getElementById('selectGrid');
+        const puzzleBoard = document.getElementById('puzzleBoard');
+        const piecePoolEl = document.getElementById('piecePool');
+        const gameTitle = document.getElementById('gameTitle');
+        const placedCountEl = document.getElementById('placedCount');
+        const completeOverlay = document.getElementById('completeOverlay');
+        const completeTitle = document.getElementById('completeTitle');
+        const completeSub = document.getElementById('completeSub');
+        const completeDesc = document.getElementById('completeDesc');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const startBtn = document.getElementById('startBtn');
+        const ruleBtn = document.getElementById('ruleBtn');
+        const ruleMask = document.getElementById('ruleMask');
+        const closeRuleBtn = document.getElementById('closeRuleBtn');
+        const selectBackBtn = document.getElementById('selectBackBtn');
+        const gameBackBtn = document.getElementById('gameBackBtn');
+        const completeContinueBtn = document.getElementById('completeContinueBtn');
+
+        // ============================================================
+        // 页面切换
+        // ============================================================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        startBtn.onclick = () => {
+            renderSelectGrid();
+            showPage('selectPage');
+        };
+
+        selectBackBtn.onclick = () => showPage('homePage');
+        gameBackBtn.onclick = () => showPage('selectPage');
+
+        ruleBtn.onclick = () => ruleMask.classList.add('show');
+        closeRuleBtn.onclick = () => ruleMask.classList.remove('show');
+        ruleMask.onclick = (e) => { if (e.target === ruleMask) ruleMask.classList.remove('show'); };
+
+        completeContinueBtn.onclick = () => {
+            completeOverlay.classList.remove('show');
+            showPage('selectPage');
+        };
+
+        // ============================================================
+        // 渲染选择网格
+        // ============================================================
+        function renderSelectGrid() {
+            selectGrid.innerHTML = '';
+            HORSE_DATA.forEach((horse, idx) => {
+                const div = document.createElement('div');
+                div.className = 'select-item';
+                div.innerHTML = `
+                    <img src="${horse.img}" alt="${horse.name}" loading="lazy" onerror="this.style.display='none'">
+                    <div class="select-label">${horse.name}</div>
+                `;
+                div.onclick = () => startGame(idx);
+                selectGrid.appendChild(div);
+            });
+        }
+
+        // ============================================================
+        // 开始游戏
+        // ============================================================
+        function startGame(horseIndex) {
+            currentHorse = HORSE_DATA[horseIndex];
+            gameTitle.textContent = `🖌️ 修复 ${currentHorse.name}`;
+            placedCount = 0;
+            placedCountEl.textContent = '0';
+            isComplete = false;
+            completeOverlay.classList.remove('show');
+
+            boardState = Array(16).fill(-1);
+            piecePool = Array.from({ length: 16 }, (_, i) => i);
+            for (let i = piecePool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [piecePool[i], piecePool[j]] = [piecePool[j], piecePool[i]];
+            }
+
+            renderGame();
+            showPage('gamePage');
+        }
+
+        // ============================================================
+        // 渲染游戏
+        // ============================================================
+        function renderGame() {
+            renderBoard();
+            renderPool();
+        }
+
+        // ============================================================
+        // 渲染拼图板
+        // ============================================================
+        function renderBoard() {
+            // 清空槽位
+            const slots = puzzleBoard.querySelectorAll('.board-slot');
+            slots.forEach(s => s.remove());
+
+            // 确保参考图存在
+            let refImg = puzzleBoard.querySelector('.reference-image');
+            if (!refImg) {
+                refImg = document.createElement('div');
+                refImg.className = 'reference-image';
+                puzzleBoard.appendChild(refImg);
+            }
+            if (currentHorse) {
+                refImg.style.backgroundImage = `url(${currentHorse.img})`;
+            }
+            refImg.style.zIndex = '0';
+
+            // 确保 overlay 存在
+            let overlay = puzzleBoard.querySelector('.puzzle-complete-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'puzzle-complete-overlay';
+                overlay.id = 'completeOverlay';
+                overlay.innerHTML = `
+                    <div class="complete-icon">🎉</div>
+                    <div class="complete-title" id="completeTitle">修复完成！</div>
+                    <div class="complete-sub" id="completeSub">你成功复原了昭陵六骏之一</div>
+                    <div class="complete-desc" id="completeDesc"></div>
+                    <button class="古风按钮 小号" id="completeContinueBtn">继续修复</button>
+                `;
+                puzzleBoard.appendChild(overlay);
+            }
+
+            const imgUrl = currentHorse ? currentHorse.img : '';
+
+            for (let i = 0; i < 16; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'board-slot';
+                slot.dataset.index = i;
+                slot.style.zIndex = '1';
+
+                const pieceId = boardState[i];
+                if (pieceId !== -1) {
+                    slot.classList.add('filled');
+                    const piece = createPiece(pieceId, imgUrl, true);
+                    slot.appendChild(piece);
+                } else {
+                    slot.style.background = 'rgba(196, 184, 168, 0.12)';
+                    const hint = document.createElement('span');
+                    hint.className = 'slot-number';
+                    hint.textContent = i + 1;
+                    slot.appendChild(hint);
+
+                    slot.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        slot.classList.add('highlight');
+                    });
+                    slot.addEventListener('dragleave', () => {
+                        slot.classList.remove('highlight');
+                    });
+                    slot.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        slot.classList.remove('highlight');
+                        const data = e.dataTransfer.getData('text/plain');
+                        if (data) {
+                            const pid = parseInt(data);
+                            tryPlacePiece(pid, i);
+                        }
+                    });
+
+                    slot.addEventListener('touchend', (e) => {
+                        slot.classList.remove('highlight');
+                        if (dragData && dragData.pieceId !== undefined) {
+                            const rect = slot.getBoundingClientRect();
+                            const touch = e.changedTouches[0];
+                            if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+                                touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+                                tryPlacePiece(dragData.pieceId, i);
+                            }
+                        }
+                    });
+                }
+
+                puzzleBoard.appendChild(slot);
+            }
+
+            // 绑定完成按钮
+            const btn = document.getElementById('completeContinueBtn');
+            if (btn) {
+                btn.onclick = () => {
+                    document.getElementById('completeOverlay').classList.remove('show');
+                    showPage('selectPage');
+                };
+            }
+
+            // 打乱按钮
+            shuffleBtn.onclick = () => {
+                if (isComplete) return;
+                for (let i = 0; i < 16; i++) {
+                    if (boardState[i] !== -1) {
+                        piecePool.push(boardState[i]);
+                        boardState[i] = -1;
+                    }
+                }
+                for (let i = piecePool.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [piecePool[i], piecePool[j]] = [piecePool[j], piecePool[i]];
+                }
+                placedCount = 0;
+                placedCountEl.textContent = '0';
+                isComplete = false;
+                completeOverlay.classList.remove('show');
+                renderGame();
+            };
+
+            checkComplete();
+        }
+
+        // ============================================================
+        // 创建拼图碎片
+        // ============================================================
+        function createPiece(pieceId, imgUrl, inBoard = false) {
+            const piece = document.createElement('div');
+            piece.className = 'puzzle-piece';
+            piece.dataset.pieceId = pieceId;
+
+            const row = Math.floor(pieceId / 4);
+            const col = pieceId % 4;
+            const x = (col / 3) * 100;
+            const y = (row / 3) * 100;
+
+            piece.style.backgroundImage = `url(${imgUrl})`;
+            piece.style.backgroundSize = '400% 400%';
+            piece.style.backgroundPosition = `${x}% ${y}%`;
+
+            if (!inBoard) {
+                piece.draggable = true;
+                piece.style.cursor = 'grab';
+
+                piece.addEventListener('dragstart', (e) => {
+                    if (isComplete) return;
+                    e.dataTransfer.setData('text/plain', pieceId.toString());
+                    piece.classList.add('dragging');
+                });
+                piece.addEventListener('dragend', () => {
+                    piece.classList.remove('dragging');
+                });
+
+                piece.addEventListener('touchstart', (e) => {
+                    if (isComplete) return;
+                    const touch = e.touches[0];
+                    dragData = {
+                        pieceId: pieceId,
+                        el: piece,
+                        startX: touch.clientX,
+                        startY: touch.clientY,
+                        isDragging: false
+                    };
+                }, { passive: true });
+
+                piece.addEventListener('touchmove', (e) => {
+                    e.preventDefault();
+                    if (!dragData || isComplete) return;
+                    const touch = e.touches[0];
+                    const dx = touch.clientX - dragData.startX;
+                    const dy = touch.clientY - dragData.startY;
+                    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+                        if (!dragData.isDragging) {
+                            dragData.isDragging = true;
+                            piece.style.opacity = '0.3';
+                            const clone = piece.cloneNode(true);
+                            clone.style.position = 'fixed';
+                            clone.style.width = '80px';
+                            clone.style.height = '80px';
+                            clone.style.zIndex = 999;
+                            clone.style.pointerEvents = 'none';
+                            clone.style.opacity = '0.85';
+                            clone.style.transform = 'scale(1.05) rotate(3deg)';
+                            clone.style.boxShadow = '0 8px 35px rgba(0,0,0,0.4)';
+                            clone.id = 'dragClone';
+                            document.body.appendChild(clone);
+                        }
+                        const clone = document.getElementById('dragClone');
+                        if (clone) {
+                            clone.style.left = (touch.clientX - 40) + 'px';
+                            clone.style.top = (touch.clientY - 40) + 'px';
+                        }
+                        const slots = puzzleBoard.querySelectorAll('.board-slot');
+                        slots.forEach(slot => {
+                            slot.classList.remove('highlight');
+                            if (boardState[parseInt(slot.dataset.index)] !== -1) return;
+                            const rect = slot.getBoundingClientRect();
+                            if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+                                touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+                                slot.classList.add('highlight');
+                            }
+                        });
+                    }
+                }, { passive: false });
+
+                piece.addEventListener('touchend', (e) => {
+                    const clone = document.getElementById('dragClone');
+                    if (clone) clone.remove();
+                    piece.style.opacity = '1';
+
+                    if (dragData) {
+                        if (dragData.isDragging) {
+                            const touch = e.changedTouches[0];
+                            const slots = puzzleBoard.querySelectorAll('.board-slot');
+                            let targetIndex = -1;
+                            slots.forEach(slot => {
+                                slot.classList.remove('highlight');
+                                const rect = slot.getBoundingClientRect();
+                                if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+                                    touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+                                    const idx = parseInt(slot.dataset.index);
+                                    if (boardState[idx] === -1) {
+                                        targetIndex = idx;
+                                    }
+                                }
+                            });
+                            if (targetIndex !== -1) {
+                                tryPlacePiece(pieceId, targetIndex);
+                            }
+                        } else {
+                            const touch = e.changedTouches[0];
+                            const slots = puzzleBoard.querySelectorAll('.board-slot');
+                            let closest = -1;
+                            let minDist = Infinity;
+                            slots.forEach(slot => {
+                                if (boardState[parseInt(slot.dataset.index)] !== -1) return;
+                                const rect = slot.getBoundingClientRect();
+                                const cx = rect.left + rect.width / 2;
+                                const cy = rect.top + rect.height / 2;
+                                const dist = Math.hypot(touch.clientX - cx, touch.clientY - cy);
+                                if (dist < minDist) {
+                                    minDist = dist;
+                                    closest = parseInt(slot.dataset.index);
+                                }
+                            });
+                            if (closest !== -1 && minDist < 120) {
+                                tryPlacePiece(pieceId, closest);
+                            }
+                        }
+                        dragData = null;
+                    }
+                }, { passive: true });
+            }
+
+            return piece;
+        }
+
+        // ============================================================
+        // 尝试放置碎片
+        // ============================================================
+        function tryPlacePiece(pieceId, slotIndex) {
+            if (isComplete) return;
+            if (pieceId === undefined || pieceId === null) return;
+            if (slotIndex < 0 || slotIndex > 15) return;
+            if (boardState[slotIndex] !== -1) return;
+
+            if (pieceId !== slotIndex) {
+                return;
+            }
+
+            boardState[slotIndex] = pieceId;
+            const poolIdx = piecePool.indexOf(pieceId);
+            if (poolIdx !== -1) {
+                piecePool.splice(poolIdx, 1);
+            }
+            placedCount++;
+            placedCountEl.textContent = placedCount;
+            renderGame();
+        }
+
+        // ============================================================
+        // 渲染碎片池
+        // ============================================================
+        function renderPool() {
+            piecePoolEl.innerHTML = '';
+            const label = document.createElement('div');
+            label.className = 'pool-label';
+            label.textContent = `🧩 碎片池 (剩余 ${piecePool.length} 块) — 拖拽碎片到板上`;
+            piecePoolEl.appendChild(label);
+
+            const imgUrl = currentHorse ? currentHorse.img : '';
+            piecePool.forEach(pieceId => {
+                const piece = createPiece(pieceId, imgUrl, false);
+                piecePoolEl.appendChild(piece);
+            });
+        }
+
+        // ============================================================
+        // 检查完成
+        // ============================================================
+        function checkComplete() {
+            if (isComplete) return;
+            let allPlaced = true;
+            for (let i = 0; i < 16; i++) {
+                if (boardState[i] !== i) {
+                    allPlaced = false;
+                    break;
+                }
+            }
+            if (allPlaced && placedCount === 16) {
+                isComplete = true;
+                if (currentHorse) {
+                    document.getElementById('completeTitle').textContent = `🎉 修复完成！`;
+                    document.getElementById('completeSub').textContent = `你成功复原了 ${currentHorse.name}`;
+                    document.getElementById('completeDesc').textContent = currentHorse.story;
+                }
+                completeOverlay.classList.add('show');
+            }
+        }
+    </script>
+</body>
+</html>

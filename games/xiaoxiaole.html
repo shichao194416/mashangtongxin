@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文物修复师 · 昭陵六骏消消乐 ｜ 马上同心·文化信使</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            width: 100%;
+            min-height: 100vh;
+            font-family: "SimSun", "Microsoft Yahei", serif;
+        }
+        body {
+    background: #f8f1e4 url("assets/bjing.webp") center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+        }
+
+        .page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            gap: 16px;
+            padding: 10px 0;
+        }
+        .page.active {
+            display: flex;
+        }
+
+        .古风按钮 {
+            padding: 12px 24px;
+            font-size: clamp(16px, 3.5vw, 20px);
+            font-family: SimSun;
+            border: 2px solid #915c38;
+            background: linear-gradient(#e6d5bc, #d4bc9c);
+            color: #5a2424;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            width: 100%;
+            max-width: 240px;
+        }
+        .古风按钮:active {
+            background: linear-gradient(#d4bc9c, #c9a87c);
+            transform: scale(0.97);
+        }
+        .古风按钮.小号 {
+            padding: 8px 16px;
+            font-size: clamp(13px, 2.8vw, 16px);
+            max-width: 160px;
+        }
+
+        .home-title {
+            text-align: center;
+            color: #6b2c2c;
+            font-size: clamp(30px, 6.5vw, 42px);
+            line-height: 1.5;
+            text-shadow: 1px 1px 0 #c9a87c, -1px -1px 0 #c9a87c, 1px -1px 0 #c9a87c, -1px 1px 0 #c9a87c, 2px 2px 6px rgba(90,
+                    40, 40, 0.25);
+            border-bottom: 2px solid #a87847;
+            padding-bottom: 12px;
+            width: 100%;
+            font-weight: 900;
+        }
+        .home-sub {
+            text-align: center;
+            font-size: clamp(16px, 3.2vw, 20px);
+            color: #6b2c2c;
+            line-height: 1.8;
+            background: rgba(255, 249, 238, 0.7);
+            padding: 16px 20px;
+            border-radius: 10px;
+            border: 1px dashed #a87847;
+            max-width: 360px;
+            margin: 0 10px;
+        }
+        .home-sub .highlight {
+            color: #b8860b;
+            font-weight: bold;
+            font-size: clamp(18px, 3.5vw, 22px);
+        }
+
+        .select-title {
+            text-align: center;
+            color: #6b2c2c;
+            font-size: clamp(22px, 4.8vw, 30px);
+            text-shadow: 1px 1px 2px #c9b89c;
+            border-bottom: 2px solid #a87847;
+            padding-bottom: 10px;
+            width: 100%;
+            font-weight: 900;
+        }
+
+        .mode-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            width: 100%;
+            max-width: 360px;
+            margin: 6px auto;
+        }
+        .mode-card {
+            aspect-ratio: 1 / 1;
+            border: 3px solid #a87847;
+            border-radius: 12px;
+            background: #fff9ee;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+            padding: 12px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(90, 40, 40, 0.1);
+        }
+        .mode-card:active {
+            transform: scale(0.95);
+            border-color: #d4a558;
+        }
+        .mode-card .mode-icon {
+            font-size: clamp(32px, 7vw, 48px);
+        }
+        .mode-card .mode-name {
+            font-size: clamp(18px, 4vw, 24px);
+            color: #6b2c2c;
+            font-weight: bold;
+            font-family: SimSun;
+        }
+        .mode-card .mode-desc {
+            font-size: clamp(12px, 2.5vw, 15px);
+            color: #8a7a6a;
+            font-family: SimSun;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 420px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .game-header .game-info {
+            color: #6b2c2c;
+            font-size: clamp(14px, 3vw, 18px);
+            font-weight: bold;
+            font-family: SimSun;
+        }
+        .game-header .game-info span {
+            color: #b8860b;
+        }
+        .game-header .game-info.timer-warning span {
+            color: #ff4444;
+            animation: blink 0.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0.3;
+            }
+        }
+
+        /* ===== 游戏网格 ===== */
+        .game-board {
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 1 / 1;
+            background: #d4c8b8;
+            border: 4px solid #a87847;
+            border-radius: 10px;
+            box-shadow: inset 0 0 30px rgba(90, 40, 40, 0.15);
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 3px;
+            padding: 3px;
+            position: relative;
+        }
+
+        .cell {
+            background: #c4b8a8;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(20px, 5vw, 36px);
+            font-weight: bold;
+            color: #6b2c2c;
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+            -webkit-user-select: none;
+            position: relative;
+            font-family: SimSun;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+        }
+        .cell .cell-label {
+            position: absolute;
+            bottom: 2px;
+            right: 4px;
+            font-size: clamp(8px, 1.5vw, 12px);
+            color: rgba(255, 255, 255, 0.7);
+            text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            font-family: SimSun;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0 4px;
+            border-radius: 3px;
+        }
+        .cell.selected {
+            border: 3px solid #d4a558;
+            box-shadow: 0 0 20px rgba(212, 165, 88, 0.5);
+            transform: scale(1.04);
+            z-index: 2;
+        }
+        .cell.hint {
+            border: 2px solid #ff6b6b;
+            animation: pulse 0.6s ease-in-out infinite alternate;
+        }
+        .cell.eliminating {
+            animation: eliminate 0.4s ease forwards;
+        }
+        .cell.dropping {
+            animation: drop 0.3s ease forwards;
+        }
+
+        @keyframes eliminate {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.4) rotate(20deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+        @keyframes drop {
+            0% {
+                transform: translateY(-60px);
+                opacity: 0.3;
+            }
+            60% {
+                transform: translateY(8px);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+            }
+            100% {
+                box-shadow: 0 0 30px rgba(255, 107, 107, 0.6);
+            }
+        }
+
+        /* 科普弹窗 - 屏幕中央 */
+        .knowledge-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(107, 44, 44, 0.95);
+            color: #f7f2e7;
+            padding: 24px 32px;
+            border-radius: 16px;
+            border: 2px solid #d4a558;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            text-align: center;
+            font-family: SimSun;
+            max-width: 85%;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+        .knowledge-popup.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: none;
+        }
+        .knowledge-popup .popup-icon {
+            font-size: clamp(32px, 6vw, 48px);
+            display: block;
+            margin-bottom: 8px;
+        }
+        .knowledge-popup .popup-name {
+            font-size: clamp(20px, 4vw, 28px);
+            font-weight: bold;
+            color: #d4a558;
+            margin-bottom: 4px;
+        }
+        .knowledge-popup .popup-text {
+            font-size: clamp(14px, 2.8vw, 18px);
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .game-bottom {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 420px;
+            flex-wrap: wrap;
+        }
+        .game-bottom .古风按钮 {
+            max-width: 180px;
+            padding: 10px 0;
+            font-size: clamp(14px, 3vw, 17px);
+        }
+
+        /* ===== 弹窗 ===== */
+        .mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 999;
+            backdrop-filter: blur(3px);
+        }
+        .mask.show {
+            display: flex;
+        }
+        .pop-box {
+            background: #f7f2e7;
+            border: 3px solid #915c38;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 20px 18px;
+            color: #442222;
+        }
+        .pop-title {
+            text-align: center;
+            font-size: clamp(20px, 4.5vw, 26px);
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #c9a87c;
+            color: #6b2c2c;
+            font-weight: 900;
+            text-shadow: 1px 1px 2px #c9b89c;
+        }
+        .pop-text {
+            line-height: 1.8;
+            font-size: clamp(14px, 3vw, 17px);
+        }
+        .pop-close {
+            margin-top: 16px;
+            width: 100%;
+            padding: 10px 0;
+        }
+        .pop-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            font-size: clamp(16px, 3.5vw, 20px);
+            font-weight: bold;
+            color: #6b2c2c;
+        }
+        .pop-stats span {
+            color: #b8860b;
+        }
+        .pop-result-icon {
+            text-align: center;
+            font-size: clamp(48px, 10vw, 72px);
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 420px) {
+            .game-board {
+                gap: 2px;
+                padding: 2px;
+            }
+            .cell {
+                font-size: clamp(16px, 4vw, 28px);
+            }
+            .knowledge-popup {
+                padding: 18px 20px;
+                max-width: 90%;
+            }
+        }
+        @media (max-width: 360px) {
+            .game-board {
+                gap: 1.5px;
+                padding: 1.5px;
+            }
+            .cell {
+                font-size: clamp(13px, 3.5vw, 22px);
+            }
+            .mode-grid {
+                gap: 10px;
+            }
+            .knowledge-popup {
+                padding: 14px 16px;
+                max-width: 92%;
+            }
+        }
+    
+/* ===== 站内二级页面：返回入口（由主站注入） ===== */
+.mstx-back{position:fixed;top:14px;left:14px;z-index:2000;display:inline-flex;align-items:center;gap:6px;
+padding:8px 14px;font-family:SimSun,serif;font-size:14px;line-height:1;color:#5a2424;
+background:linear-gradient(#f7f2e7,#e6d5bc);border:2px solid #915c38;border-radius:999px;
+box-shadow:0 4px 14px rgba(90,40,40,.25);text-decoration:none;letter-spacing:1px;
+transition:transform .2s,box-shadow .2s}
+.mstx-back:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(90,40,40,.32)}
+.mstx-back:active{transform:scale(.97)}
+@media(max-width:420px){.mstx-back{top:10px;left:10px;padding:6px 11px;font-size:12px;letter-spacing:0}}
+</style>
+</head>
+<body>
+<a class="mstx-back" href="../index.html#course" aria-label="返回马上同心网站「微课与游戏」">← 返回「微课与游戏」</a>
+    <div class="app-container">
+
+        <!-- ===== 首页 ===== -->
+        <div class="page active" id="homePage">
+            <h1 class="home-title">🖌️ 文物修复师<br>昭陵六骏消消乐</h1>
+            <div class="home-sub">
+                尊敬的文物修复师，<br>
+                通过消除六骏图样<br>
+                来检测你对文物的熟悉度。<br>
+                选择难度，开始你的修复之旅！
+            </div>
+            <button class="古风按钮" id="startBtn">开始修复</button>
+            <button class="古风按钮" id="ruleBtn">游戏规则</button>
+        </div>
+
+        <!-- ===== 模式选择 ===== -->
+        <div class="page" id="selectPage">
+            <h2 class="select-title">🏇 选择修复难度</h2>
+            <div class="mode-grid">
+                <div class="mode-card" data-mode="easy">
+                    <div class="mode-icon">🟢</div>
+                    <div class="mode-name">简单</div>
+                    <div class="mode-desc">6张Q版骏马<br>目标：1000分</div>
+                </div>
+                <div class="mode-card" data-mode="hard">
+                    <div class="mode-icon">🔴</div>
+                    <div class="mode-name">困难</div>
+                    <div class="mode-desc">6张正比骏马<br>⏱️ 3分钟倒计时</div>
+                </div>
+            </div>
+            <button class="古风按钮 小号" id="selectBackBtn">← 返回</button>
+        </div>
+
+        <!-- ===== 游戏页 ===== -->
+        <div class="page" id="gamePage">
+            <div class="game-header">
+                <button class="古风按钮 小号" id="exitGameBtn" style="max-width:100px;padding:6px 12px;font-size:clamp(13px,2.5vw,15px);">← 退出</button>
+                <div class="game-info" id="timerInfo">⏱️ <span id="timerDisplay">00:00</span></div>
+                <div class="game-info" id="scoreInfo">🏆 <span id="scoreDisplay">0</span>分</div>
+            </div>
+
+            <div class="game-board" id="gameBoard"></div>
+
+            <div class="game-bottom">
+                <button class="古风按钮" id="shuffleBtn">🔀 重新洗牌</button>
+                <button class="古风按钮" id="hintBtn">💡 提示</button>
+            </div>
+        </div>
+
+        <!-- ===== 科普弹窗（屏幕中央） ===== -->
+        <div class="knowledge-popup" id="knowledgePopup">
+            <span class="popup-icon" id="popupIcon">🐴</span>
+            <div class="popup-name" id="popupName">白蹄乌</div>
+            <div class="popup-text" id="popupText">通体乌黑，四蹄雪白，日行千里</div>
+        </div>
+
+        <!-- ===== 规则弹窗 ===== -->
+        <div class="mask" id="ruleMask">
+            <div class="pop-box">
+                <h3 class="pop-title">📜 修复指南</h3>
+                <div class="pop-text">
+                    <p><strong>🧑‍🔧 你的身份：</strong>唐代文物修复师</p><br>
+                    <p><strong>🎯 任务：</strong>通过交换相邻的骏马图样，凑齐3张相同即可消除修复。</p><br>
+                    <p><strong>🖱️ 操作方法：</strong></p>
+                    <p>· 点击选中一张卡片 → 点击相邻卡片 → 交换位置</p>
+                    <p>· 交换后若能形成 <strong>3张及以上</strong> 相同连线（横/竖），则消除</p>
+                    <p>· 消除后上方的卡片会 <strong>掉落</strong> 填补空缺</p><br>
+                    <p><strong>🏆 胜利条件：</strong></p>
+                    <p>· 简单模式：达到 <strong>1000分</strong> 即可修复完成</p>
+                    <p>· 困难模式：在 <strong>3分钟</strong> 内尽可能获得高分</p><br>
+                    <p>💡 <em>每一块碎片都承载着千年历史，请细心修复！</em></p>
+                </div>
+                <button class="古风按钮 pop-close" id="closeRuleBtn">知晓了</button>
+            </div>
+        </div>
+
+        <!-- ===== 结算弹窗 ===== -->
+        <div class="mask" id="resultMask">
+            <div class="pop-box">
+                <div class="pop-result-icon" id="resultIcon">🎉</div>
+                <h3 class="pop-title" id="resultTitle">修复完成！</h3>
+                <div class="pop-stats">
+                    <div>⏱️ <span id="resultTime">00:00</span></div>
+                    <div>🏆 <span id="resultScore">0</span>分</div>
+                </div>
+                <div class="pop-text" id="resultDesc" style="text-align:center;"></div>
+                <button class="古风按钮 pop-close" id="resultCloseBtn">继续修复</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================
+        // 数据配置 - 图片映射
+        // ============================================================
+        const HORSE_INFO = [
+            { id: 0, name: '白蹄乌', text: '通体乌黑，四蹄雪白，日行千里' },
+            { id: 1, name: '青骓',  text: '青白相间，虎牢关身中五箭仍冲锋' },
+            { id: 2, name: '拳毛騧',  text: '旋毛卷曲，身中九箭力竭而亡' },
+            { id: 3, name: '飒露紫',  text: '紫燕飞驰，将军拔箭感人至深' },
+            { id: 4, name: '什伐赤',  text: '西域波斯纯红骏马，身中五箭' },
+            { id: 5, name: '特勒骠',  text: '突厥进贡黄骠马，战功赫赫' }
+        ];
+
+        // 图片映射：数字 -> 图片文件
+        const IMG_MAP = {
+            // Q版 (简单模式用 1-6)
+            1: { horseId: 1, file: 'assets/Qbjqing.webp', label: 'Q青骓' },
+            2: { horseId: 2, file: 'assets/Qbjquan.webp', label: 'Q拳毛騧' },
+            3: { horseId: 3, file: 'assets/Qbjsa.webp', label: 'Q飒露紫' },
+            4: { horseId: 4, file: 'assets/Qbjsheng.webp', label: 'Q什伐赤' },
+            5: { horseId: 5, file: 'assets/Qbjte.webp', label: 'Q特勒骠' },
+            6: { horseId: 0, file: 'assets/Qbjbai.webp', label: 'Q白蹄乌' },
+            // 正比 (困难模式用 7-12)
+            7: { horseId: 0, file: 'assets/bai1.webp', label: '白蹄乌' },
+            8: { horseId: 1, file: 'assets/qing1.webp', label: '青骓' },
+            9: { horseId: 2, file: 'assets/quan1.webp', label: '拳毛騧' },
+            10: { horseId: 3, file: 'assets/sa1.webp', label: '飒露紫' },
+            11: { horseId: 4, file: 'assets/sheng1.webp', label: '什伐赤' },
+            12: { horseId: 5, file: 'assets/te1.webp', label: '特勒骠' }
+        };
+
+        const EASY_IDS = [1, 2, 3, 4, 5, 6];
+        const HARD_IDS = [7, 8, 9, 10, 11, 12]; // 困难模式只用正比图
+
+        // 目标分数
+        const TARGET_SCORE = 1000;
+        // 困难模式倒计时（秒）
+        const HARD_TIMER_LIMIT = 180;
+
+        // ============================================================
+        // 状态
+        // ============================================================
+        let grid = [];
+        let rows = 6,
+            cols = 6;
+        let score = 0;
+        let selectedRow = -1,
+            selectedCol = -1;
+        let isProcessing = false;
+        let timerInterval = null;
+        let seconds = 0;
+        let isGameActive = false;
+        let currentMode = 'easy';
+        let currentTilePool = [];
+        let isTimerCountdown = false;
+        let gameEnded = false;
+        let popupTimeout = null;
+
+        // DOM 引用
+        const homePage = document.getElementById('homePage');
+        const selectPage = document.getElementById('selectPage');
+        const gamePage = document.getElementById('gamePage');
+        const gameBoard = document.getElementById('gameBoard');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerInfo = document.getElementById('timerInfo');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const scoreInfo = document.getElementById('scoreInfo');
+        const knowledgePopup = document.getElementById('knowledgePopup');
+        const popupIcon = document.getElementById('popupIcon');
+        const popupName = document.getElementById('popupName');
+        const popupText = document.getElementById('popupText');
+        const startBtn = document.getElementById('startBtn');
+        const ruleBtn = document.getElementById('ruleBtn');
+        const ruleMask = document.getElementById('ruleMask');
+        const closeRuleBtn = document.getElementById('closeRuleBtn');
+        const selectBackBtn = document.getElementById('selectBackBtn');
+        const exitGameBtn = document.getElementById('exitGameBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const hintBtn = document.getElementById('hintBtn');
+        const resultMask = document.getElementById('resultMask');
+        const resultIcon = document.getElementById('resultIcon');
+        const resultTitle = document.getElementById('resultTitle');
+        const resultTime = document.getElementById('resultTime');
+        const resultScore = document.getElementById('resultScore');
+        const resultDesc = document.getElementById('resultDesc');
+        const resultCloseBtn = document.getElementById('resultCloseBtn');
+
+        // ============================================================
+        // 页面切换
+        // ============================================================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        startBtn.onclick = () => {
+            showPage('selectPage');
+        };
+
+        selectBackBtn.onclick = () => {
+            stopTimer();
+            showPage('homePage');
+        };
+
+        ruleBtn.onclick = () => ruleMask.classList.add('show');
+        closeRuleBtn.onclick = () => ruleMask.classList.remove('show');
+        ruleMask.onclick = (e) => { if (e.target === ruleMask) ruleMask.classList.remove('show'); };
+
+        // ============================================================
+        // 模式选择
+        // ============================================================
+        document.querySelectorAll('.mode-card').forEach(card => {
+            card.onclick = () => {
+                currentMode = card.dataset.mode;
+                startGame(currentMode);
+            };
+        });
+
+        // ============================================================
+        // 获取当前模式的图片数字池
+        // ============================================================
+        function getTilePool(mode) {
+            return mode === 'easy' ? EASY_IDS : HARD_IDS;
+        }
+
+        // ============================================================
+        // 开始游戏
+        // ============================================================
+        function startGame(mode) {
+            stopTimer();
+            gameEnded = false;
+            seconds = 0;
+            score = 0;
+            scoreDisplay.textContent = '0';
+            isProcessing = false;
+            selectedRow = -1;
+            selectedCol = -1;
+            isGameActive = true;
+            timerInfo.classList.remove('timer-warning');
+
+            currentTilePool = getTilePool(mode);
+
+            if (mode === 'easy') {
+                isTimerCountdown = false;
+                timerDisplay.textContent = '00:00';
+            } else {
+                isTimerCountdown = true;
+                seconds = HARD_TIMER_LIMIT;
+                const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+                const s = String(seconds % 60).padStart(2, '0');
+                timerDisplay.textContent = `${m}:${s}`;
+            }
+
+            // 生成网格
+            let pool = [];
+            const tileIds = getTilePool(mode);
+            if (mode === 'easy') {
+                for (let i = 0; i < tileIds.length; i++) {
+                    for (let j = 0; j < 6; j++) {
+                        pool.push(tileIds[i]);
+                    }
+                }
+            } else {
+                // 困难模式：6张正比图，每张6次 = 36格
+                for (let i = 0; i < tileIds.length; i++) {
+                    for (let j = 0; j < 6; j++) {
+                        pool.push(tileIds[i]);
+                    }
+                }
+            }
+
+            for (let i = pool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [pool[i], pool[j]] = [pool[j], pool[i]];
+            }
+
+            grid = [];
+            let idx = 0;
+            for (let r = 0; r < rows; r++) {
+                const row = [];
+                for (let c = 0; c < cols; c++) {
+                    row.push(pool[idx++]);
+                }
+                grid.push(row);
+            }
+
+            // 移除初始3连，并确保有有效移动
+            let attempts = 0;
+            while (attempts < 50) {
+                const matches = findAllMatches();
+                if (matches.length === 0) {
+                    if (hasValidMoves()) break;
+                }
+                for (const [r, c] of matches) {
+                    grid[r][c] = getRandomTile();
+                }
+                attempts++;
+            }
+            // 如果还是没有有效移动，强制洗牌
+            if (!hasValidMoves()) {
+                forceShuffle();
+            }
+
+            renderGrid();
+            showPage('gamePage');
+
+            // 启动计时器
+            timerInterval = setInterval(() => {
+                if (!isGameActive || gameEnded) return;
+
+                if (isTimerCountdown) {
+                    seconds--;
+                    if (seconds <= 10) {
+                        timerInfo.classList.add('timer-warning');
+                    }
+                    if (seconds <= 0) {
+                        seconds = 0;
+                        const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+                        const s = String(seconds % 60).padStart(2, '0');
+                        timerDisplay.textContent = `${m}:${s}`;
+                        stopTimer();
+                        isGameActive = false;
+                        showResult(false, '⏰ 时间到！');
+                        return;
+                    }
+                    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+                    const s = String(seconds % 60).padStart(2, '0');
+                    timerDisplay.textContent = `${m}:${s}`;
+                } else {
+                    seconds++;
+                    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+                    const s = String(seconds % 60).padStart(2, '0');
+                    timerDisplay.textContent = `${m}:${s}`;
+                }
+
+                if (mode === 'easy' && score >= TARGET_SCORE && !gameEnded) {
+                    gameEnded = true;
+                    stopTimer();
+                    isGameActive = false;
+                    showResult(true, '🎉 修复完成！');
+                }
+            }, 1000);
+        }
+
+        // ============================================================
+        // 强制洗牌
+        // ============================================================
+        function forceShuffle() {
+            const vals = [];
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    vals.push(grid[r][c]);
+                }
+            }
+            for (let i = vals.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [vals[i], vals[j]] = [vals[j], vals[i]];
+            }
+            let idx = 0;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    grid[r][c] = vals[idx++];
+                }
+            }
+            let attempts = 0;
+            while (attempts < 30) {
+                const matches = findAllMatches();
+                if (matches.length === 0 && hasValidMoves()) break;
+                for (const [r, c] of matches) {
+                    grid[r][c] = getRandomTile();
+                }
+                attempts++;
+            }
+        }
+
+        // ============================================================
+        // 获取随机图块
+        // ============================================================
+        function getRandomTile() {
+            const pool = currentTilePool;
+            return pool[Math.floor(Math.random() * pool.length)];
+        }
+
+        // ============================================================
+        // 获取图片路径
+        // ============================================================
+        function getImagePath(val) {
+            const info = IMG_MAP[val];
+            return info ? info.file : '';
+        }
+
+        // ============================================================
+        // 获取图片显示名
+        // ============================================================
+        function getTileLabel(val) {
+            const info = IMG_MAP[val];
+            return info ? info.label : '?';
+        }
+
+        // ============================================================
+        // 获取骏马ID
+        // ============================================================
+        function getHorseId(val) {
+            const info = IMG_MAP[val];
+            return info ? info.horseId : -1;
+        }
+
+        // ============================================================
+        // 渲染网格
+        // ============================================================
+        function renderGrid() {
+            gameBoard.innerHTML = '';
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    const val = grid[r][c];
+                    const imgPath = getImagePath(val);
+                    const label = getTileLabel(val);
+
+                    if (imgPath) {
+                        cell.style.backgroundImage = `url(${imgPath})`;
+                        cell.style.backgroundSize = 'cover';
+                        cell.style.backgroundPosition = 'center';
+                        cell.style.backgroundRepeat = 'no-repeat';
+                    } else {
+                        cell.style.background = '#c4b8a8';
+                    }
+
+                    const labelSpan = document.createElement('span');
+                    labelSpan.className = 'cell-label';
+                    labelSpan.textContent = label;
+                    cell.appendChild(labelSpan);
+
+                    if (selectedRow === r && selectedCol === c) {
+                        cell.classList.add('selected');
+                    }
+
+                    cell.addEventListener('click', () => onCellClick(r, c));
+                    gameBoard.appendChild(cell);
+                }
+            }
+        }
+
+        // ============================================================
+        // 点击处理
+        // ============================================================
+        function onCellClick(row, col) {
+            if (isProcessing || !isGameActive || gameEnded) return;
+
+            if (selectedRow === -1 && selectedCol === -1) {
+                selectedRow = row;
+                selectedCol = col;
+                renderGrid();
+                return;
+            }
+
+            if (selectedRow === row && selectedCol === col) {
+                selectedRow = -1;
+                selectedCol = -1;
+                renderGrid();
+                return;
+            }
+
+            const dr = Math.abs(selectedRow - row);
+            const dc = Math.abs(selectedCol - col);
+            if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) {
+                trySwap(selectedRow, selectedCol, row, col);
+            } else {
+                selectedRow = row;
+                selectedCol = col;
+                renderGrid();
+            }
+        }
+
+        // ============================================================
+        // 尝试交换
+        // ============================================================
+        function trySwap(r1, c1, r2, c2) {
+            isProcessing = true;
+            selectedRow = -1;
+            selectedCol = -1;
+
+            [grid[r1][c1], grid[r2][c2]] = [grid[r2][c2], grid[r1][c1]];
+
+            const matches = findAllMatches();
+            if (matches.length > 0) {
+                renderGrid();
+                processMatches(matches);
+            } else {
+                [grid[r1][c1], grid[r2][c2]] = [grid[r2][c2], grid[r1][c1]];
+                renderGrid();
+                isProcessing = false;
+            }
+        }
+
+        // ============================================================
+        // 查找所有匹配
+        // ============================================================
+        function findAllMatches() {
+            const matched = new Set();
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols - 2; c++) {
+                    const val = grid[r][c];
+                    if (val === 0) continue;
+                    let count = 1;
+                    while (c + count < cols && grid[r][c + count] === val) count++;
+                    if (count >= 3) {
+                        for (let i = 0; i < count; i++) {
+                            matched.add(`${r},${c + i}`);
+                        }
+                    }
+                    c += count - 1;
+                }
+            }
+
+            for (let c = 0; c < cols; c++) {
+                for (let r = 0; r < rows - 2; r++) {
+                    const val = grid[r][c];
+                    if (val === 0) continue;
+                    let count = 1;
+                    while (r + count < rows && grid[r + count][c] === val) count++;
+                    if (count >= 3) {
+                        for (let i = 0; i < count; i++) {
+                            matched.add(`${r + i},${c}`);
+                        }
+                    }
+                    r += count - 1;
+                }
+            }
+
+            const result = [];
+            for (const key of matched) {
+                const [r, c] = key.split(',').map(Number);
+                result.push([r, c]);
+            }
+            return result;
+        }
+
+        // ============================================================
+        // 处理匹配消除
+        // ============================================================
+        function processMatches(matches) {
+            const horseIds = new Set();
+            for (const [r, c] of matches) {
+                const val = grid[r][c];
+                if (val > 0) {
+                    const hid = getHorseId(val);
+                    if (hid >= 0) horseIds.add(hid);
+                }
+                grid[r][c] = 0;
+            }
+
+            const points = matches.length * 10;
+            score += points;
+            scoreDisplay.textContent = score;
+
+            // 显示科普弹窗（屏幕中央，1秒）
+            if (horseIds.size > 0) {
+                const hid = [...horseIds][0];
+                const info = HORSE_INFO[hid];
+                if (info) {
+                    showKnowledgePopup(info);
+                }
+            }
+
+            renderGrid();
+
+            const cells = gameBoard.querySelectorAll('.cell');
+            for (const [r, c] of matches) {
+                const idx = r * cols + c;
+                if (cells[idx]) {
+                    cells[idx].classList.add('eliminating');
+                }
+            }
+
+            setTimeout(() => {
+                applyGravity();
+                renderGrid();
+
+                setTimeout(() => {
+                    const newMatches = findAllMatches();
+                    if (newMatches.length > 0) {
+                        score += newMatches.length * 5;
+                        scoreDisplay.textContent = score;
+                        processMatches(newMatches);
+                    } else {
+                        isProcessing = false;
+                        if (currentMode === 'easy' && score >= TARGET_SCORE && !gameEnded) {
+                            gameEnded = true;
+                            stopTimer();
+                            isGameActive = false;
+                            showResult(true, '🎉 修复完成！');
+                            return;
+                        }
+                        if (!hasValidMoves()) {
+                            shuffleBoard();
+                        }
+                    }
+                }, 300);
+            }, 400);
+        }
+
+        // ============================================================
+        // 显示科普弹窗（屏幕中央，1秒）
+        // ============================================================
+        function showKnowledgePopup(info) {
+            if (popupTimeout) {
+                clearTimeout(popupTimeout);
+                knowledgePopup.classList.remove('show');
+            }
+
+            popupIcon.textContent = info.icon || '🐴';
+            popupName.textContent = info.name;
+            popupText.textContent = info.text;
+
+            // 触发显示
+            requestAnimationFrame(() => {
+                knowledgePopup.classList.add('show');
+            });
+
+            popupTimeout = setTimeout(() => {
+                knowledgePopup.classList.remove('show');
+                popupTimeout = null;
+            }, 1000);
+        }
+
+        // ============================================================
+        // 重力掉落
+        // ============================================================
+        function applyGravity() {
+            for (let c = 0; c < cols; c++) {
+                let writeRow = rows - 1;
+                for (let r = rows - 1; r >= 0; r--) {
+                    if (grid[r][c] !== 0) {
+                        grid[writeRow][c] = grid[r][c];
+                        if (writeRow !== r) grid[r][c] = 0;
+                        writeRow--;
+                    }
+                }
+                for (let r = writeRow; r >= 0; r--) {
+                    grid[r][c] = getRandomTile();
+                }
+            }
+        }
+
+        // ============================================================
+        // 检查是否有有效移动
+        // ============================================================
+        function hasValidMoves() {
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (c < cols - 1) {
+                        [grid[r][c], grid[r][c + 1]] = [grid[r][c + 1], grid[r][c]];
+                        if (findAllMatches().length > 0) {
+                            [grid[r][c], grid[r][c + 1]] = [grid[r][c + 1], grid[r][c]];
+                            return true;
+                        }
+                        [grid[r][c], grid[r][c + 1]] = [grid[r][c + 1], grid[r][c]];
+                    }
+                    if (r < rows - 1) {
+                        [grid[r][c], grid[r + 1][c]] = [grid[r + 1][c], grid[r][c]];
+                        if (findAllMatches().length > 0) {
+                            [grid[r][c], grid[r + 1][c]] = [grid[r + 1][c], grid[r][c]];
+                            return true;
+                        }
+                        [grid[r][c], grid[r + 1][c]] = [grid[r + 1][c], grid[r][c]];
+                    }
+                }
+            }
+            return false;
+        }
+
+        // ============================================================
+        // 洗牌
+        // ============================================================
+        function shuffleBoard() {
+            if (isProcessing || gameEnded) return;
+
+            // 收集所有值
+            const vals = [];
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    vals.push(grid[r][c]);
+                }
+            }
+            // 打乱
+            for (let i = vals.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [vals[i], vals[j]] = [vals[j], vals[i]];
+            }
+            let idx = 0;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    grid[r][c] = vals[idx++];
+                }
+            }
+
+            // 移除3连并保证有有效移动
+            let attempts = 0;
+            while (attempts < 30) {
+                const matches = findAllMatches();
+                if (matches.length === 0 && hasValidMoves()) break;
+                for (const [r, c] of matches) {
+                    grid[r][c] = getRandomTile();
+                }
+                attempts++;
+            }
+            if (!hasValidMoves()) {
+                forceShuffle();
+            }
+
+            renderGrid();
+            showKnowledgePopup({ icon: '🔄', name: '重新洗牌', text: '碎片已重新排列，继续修复！' });
+        }
+
+        // ============================================================
+        // 退出游戏
+        // ============================================================
+        exitGameBtn.onclick = () => {
+            if (!isGameActive) {
+                showPage('selectPage');
+                return;
+            }
+            if (confirm('确定要退出本次修复吗？当前得分：' + score + '分。')) {
+                stopTimer();
+                isGameActive = false;
+                gameEnded = true;
+                showResult(false, '📖 修复暂停');
+            }
+        };
+
+        // ============================================================
+        // 洗牌按钮
+        // ============================================================
+        shuffleBtn.onclick = () => {
+            if (isProcessing || !isGameActive || gameEnded) return;
+            shuffleBoard();
+        };
+
+        // ============================================================
+        // 提示按钮
+        // ============================================================
+        hintBtn.onclick = () => {
+            if (isProcessing || !isGameActive || gameEnded) return;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (c < cols - 1) {
+                        [grid[r][c], grid[r][c + 1]] = [grid[r][c + 1], grid[r][c]];
+                        if (findAllMatches().length > 0) {
+                            [grid[r][c], grid[r][c + 1]] = [grid[r][c + 1], grid[r][c]];
+                            highlightCells([
+                                [r, c],
+                                [r, c + 1]
+                            ]);
+                            return;
+                        }
+                        [grid[r][c], grid[r][c + 1]] = [grid[r][c + 1], grid[r][c]];
+                    }
+                    if (r < rows - 1) {
+                        [grid[r][c], grid[r + 1][c]] = [grid[r + 1][c], grid[r][c]];
+                        if (findAllMatches().length > 0) {
+                            [grid[r][c], grid[r + 1][c]] = [grid[r + 1][c], grid[r][c]];
+                            highlightCells([
+                                [r, c],
+                                [r + 1, c]
+                            ]);
+                            return;
+                        }
+                        [grid[r][c], grid[r + 1][c]] = [grid[r + 1][c], grid[r][c]];
+                    }
+                }
+            }
+            showKnowledgePopup({ icon: '💡', name: '提示', text: '暂时没有可消除的组合，试试洗牌！' });
+        };
+
+        function highlightCells(positions) {
+            const cells = gameBoard.querySelectorAll('.cell');
+            for (const [r, c] of positions) {
+                const idx = r * cols + c;
+                if (cells[idx]) {
+                    cells[idx].classList.add('hint');
+                    setTimeout(() => {
+                        cells[idx].classList.remove('hint');
+                    }, 1500);
+                }
+            }
+        }
+
+        // ============================================================
+        // 计时器控制
+        // ============================================================
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        // ============================================================
+        // 结算
+        // ============================================================
+        function showResult(isVictory, title) {
+            const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const s = String(seconds % 60).padStart(2, '0');
+            resultTime.textContent = `${m}:${s}`;
+            resultScore.textContent = score;
+            resultIcon.textContent = isVictory ? '🎉' : '📖';
+
+            if (isVictory && currentMode === 'easy') {
+                resultTitle.textContent = '🎉 修复完成！';
+                resultDesc.textContent = `你成功修复了昭陵六骏！用时 ${m}:${s}，获得 ${score} 分！`;
+            } else if (currentMode === 'hard' && !isVictory) {
+                resultTitle.textContent = '⏰ 时间到！';
+                const groups = Math.floor(score / 10);
+                resultDesc.textContent = `你修复了 ${groups} 组骏马图样，获得 ${score} 分！\n继续练习，成为更优秀的修复师！`;
+            } else if (!isVictory && title === '📖 修复暂停') {
+                resultTitle.textContent = '📖 修复暂停';
+                const groups = Math.floor(score / 10);
+                resultDesc.textContent = `你已修复了 ${groups} 组骏马图样，获得 ${score} 分。\n下次继续努力！`;
+            } else {
+                resultTitle.textContent = title || '游戏结束';
+                const groups = Math.floor(score / 10);
+                resultDesc.textContent = `你修复了 ${groups} 组骏马图样，获得 ${score} 分。`;
+            }
+
+            resultMask.classList.add('show');
+        }
+
+        resultCloseBtn.onclick = () => {
+            resultMask.classList.remove('show');
+            showPage('selectPage');
+        };
+
+        // ============================================================
+        // 键盘支持
+        // ============================================================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (ruleMask.classList.contains('show')) {
+                    ruleMask.classList.remove('show');
+                } else if (resultMask.classList.contains('show')) {
+                    resultMask.classList.remove('show');
+                } else if (gamePage.classList.contains('active')) {
+                    exitGameBtn.click();
+                }
+            }
+        });
+
+        // ============================================================
+        // 初始化
+        // ============================================================
+        showPage('homePage');
+    </script>
+</body>
+</html>

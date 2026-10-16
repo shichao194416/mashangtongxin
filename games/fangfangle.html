@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文物润疆·神骏传心 昭陵六骏翻翻乐 ｜ 马上同心·文化信使</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+        }
+        body {
+            background: #f8f1e4 url("assets/beijing.webp");
+            font-family: "SimSun", "Microsoft Yahei", serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== 首页 ===== */
+        .home-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            gap: 28px;
+            padding: 12px 0;
+            width: 100%;
+        }
+        .home-title {
+            text-align: center;
+            color: #150000;
+            font-size: clamp(30px, 6vw, 40px);
+            line-height: 1.6;
+            text-shadow: 3px 3px 5px #f1e3ce;
+            border-bottom: 2px solid #a87847;
+            padding-bottom: 12px;
+            width: 100%;
+        }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            max-width: 240px;
+            align-items: center;
+        }
+        .古风按钮 {
+            padding: 12px 0;
+            font-size: clamp(15px, 3.5vw, 19px);
+            font-family: SimSun;
+            border: 2px solid #915c38;
+            background: linear-gradient(#e6d5bc, #d4bc9c);
+            color: #5a2424;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            width: 100%;
+        }
+        .古风按钮:active {
+            background: linear-gradient(#d4bc9c, #c9a87c);
+            transform: scale(0.97);
+        }
+
+        /* ===== 游戏页面 ===== */
+        .game-page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 6px 0 10px;
+            width: 100%;
+        }
+        .game-title {
+            text-align: center;
+            color: #f5eded;
+            font-size: clamp(20px, 4.5vw, 28px);
+            padding-bottom: 8px;
+            border-bottom: 2px solid #a87847;
+            line-height: 1.4;
+            width: 100%;
+        }
+        .match-counter {
+            text-align: center;
+            color: #6b2c2c;
+            font-size: clamp(14px, 3vw, 17px);
+            letter-spacing: 1px;
+            opacity: 0.85;
+            width: 100%;
+        }
+        .match-counter span {
+            font-weight: bold;
+            color: #b8860b;
+        }
+
+        /* ===== 卡片网格：3列4行，对手机竖屏更友好 ===== */
+        .game-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto;
+            justify-items: center;
+            align-items: center;
+        }
+
+        /* ===== 卡牌 ===== */
+        .card {
+            width: 110px;
+            height: 110px;
+            max-width: 100%;
+            aspect-ratio: 1 / 1;
+            position: relative;
+            cursor: pointer;
+            perspective: 600px;
+            -webkit-tap-highlight-color: transparent;
+            flex-shrink: 0;
+        }
+
+        /* 手机窄屏自动缩小填满 */
+        @media (max-width: 420px) {
+            .game-box {
+                max-width: 100%;
+                gap: 8px;
+            }
+            .card {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1 / 1;
+            }
+        }
+        @media (max-width: 340px) {
+            .game-box {
+                gap: 5px;
+            }
+        }
+
+        .card-wrap {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.4s ease;
+            transform-style: preserve-3d;
+            border-radius: 6px;
+        }
+        .card.flip .card-wrap {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 6px;
+            border: 1.5px solid #a87847;
+            box-shadow: 0 2px 8px rgba(90, 40, 40, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+        }
+        .card-back-face {
+    background: #6d4c37 url("assets/beijing2.webp") center/cover no-repeat;
+    /* 去掉原来的 font-size 和 color，因为不再显示文字 */
+    font-size: 0;
+    color: transparent;
+}
+        
+        .card-front-face {
+            background: #fff9ee;
+            padding: 4px;
+            transform: rotateY(180deg);
+        }
+        .card-front-face img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border-radius: 4px;
+        }
+
+        /* ===== 配对成功 ===== */
+        .card.match {
+            pointer-events: none;
+        }
+        .card.match .card-wrap {
+            transform: rotateY(180deg);
+            border: 2.5px solid #d4a558;
+            box-shadow: 0 0 16px rgba(212, 165, 88, 0.7), 0 0 32px rgba(212, 165, 88, 0.2);
+            border-radius: 8px;
+        }
+        .card.match .card-front-face {
+            border-color: #d4a558;
+        }
+
+        /* ===== 底部按钮 ===== */
+        .game-bottom-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            max-width: 360px;
+            margin: 8px auto 0;
+            width: 100%;
+        }
+        .game-bottom-bar .古风按钮 {
+            width: 48%;
+            min-height: 40px;
+            font-size: clamp(15px, 3.5vw, 18px);
+            font-weight: bold;
+            letter-spacing: 1px;
+            padding: 8px 0;
+        }
+
+        /* ===== 弹窗 ===== */
+        .mask {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 999;
+            backdrop-filter: blur(3px);
+        }
+        .pop-box {
+            background: #f7f2e7;
+            border: 3px solid #915c38;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 360px;
+            max-height: 75vh;
+            overflow-y: auto;
+            padding: 18px 16px;
+            color: #442222;
+        }
+        .pop-title {
+            text-align: center;
+            font-size: clamp(20px, 4.5vw, 26px);
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #c9a87c;
+        }
+        .pop-text {
+            line-height: 1.7;
+            font-size: clamp(14px, 3vw, 17px);
+        }
+        .pop-close {
+            margin-top: 14px;
+            width: 100%;
+            padding: 10px 0;
+            font-size: clamp(14px, 3vw, 17px);
+        }
+
+        @media (max-width: 340px) {
+            .game-box {
+                gap: 4px;
+            }
+            .card-face {
+                border-width: 1px;
+            }
+            .game-bottom-bar {
+                gap: 6px;
+            }
+            .game-bottom-bar .古风按钮 {
+                min-height: 34px;
+                font-size: 13px;
+            }
+        }
+    
+/* ===== 站内二级页面：返回入口（由主站注入） ===== */
+.mstx-back{position:fixed;top:14px;left:14px;z-index:2000;display:inline-flex;align-items:center;gap:6px;
+padding:8px 14px;font-family:SimSun,serif;font-size:14px;line-height:1;color:#5a2424;
+background:linear-gradient(#f7f2e7,#e6d5bc);border:2px solid #915c38;border-radius:999px;
+box-shadow:0 4px 14px rgba(90,40,40,.25);text-decoration:none;letter-spacing:1px;
+transition:transform .2s,box-shadow .2s}
+.mstx-back:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(90,40,40,.32)}
+.mstx-back:active{transform:scale(.97)}
+@media(max-width:420px){.mstx-back{top:10px;left:10px;padding:6px 11px;font-size:12px;letter-spacing:0}}
+</style>
+</head>
+<body>
+<a class="mstx-back" href="../index.html#course" aria-label="返回马上同心网站「微课与游戏」">← 返回「微课与游戏」</a>
+<div class="app-container">
+    <!-- ====== 首页 ====== -->
+    <div class="home-page" id="homePage">
+        <h1 class="home-title">文物润疆·神骏传心<br>昭陵六骏翻翻乐</h1>
+        <div class="btn-group">
+            <button class="古风按钮" id="startGameBtn">开始游戏</button>
+            <button class="古风按钮" id="ruleBtn">游戏规则</button>
+        </div>
+    </div>
+
+    <!-- ====== 游戏页面 ====== -->
+    <div class="game-page" id="gamePage">
+        <h2 class="game-title">文物润疆·神骏传心<br>昭陵六骏翻翻乐</h2>
+        <div class="match-counter">已配对：<span id="matchCount">0</span> / 6</div>
+        <div class="game-box" id="gameBox"></div>
+        <div class="game-bottom-bar">
+            <button class="古风按钮" id="exitGameBtn">退出游戏</button>
+            <button class="古风按钮" id="restartBtn">再来一局</button>
+        </div>
+    </div>
+
+    <!-- ====== 规则弹窗 ====== -->
+    <div class="mask" id="ruleMask">
+        <div class="pop-box">
+            <h3 class="pop-title">游戏规则</h3>
+            <div class="pop-text">
+                1. 游戏共12张卡牌，6匹昭陵骏马各有两张配对卡片<br>
+                2. 点击卡牌会立体翻转翻开，每次仅可翻开两张卡牌<br>
+                3. 两张卡牌为同一匹骏马，则配对成功，永久展示骏马原图并弹出文物科普<br>
+                4. 两张卡牌不匹配，卡牌自动翻转回问号背面<br>
+                5. 全部卡牌配对完成即通关，完整了解昭陵六骏历史文化
+            </div>
+            <button class="古风按钮 pop-close" id="closeRuleBtn">关闭</button>
+        </div>
+    </div>
+
+    <!-- ====== 骏马科普弹窗 ====== -->
+    <div class="mask" id="introMask">
+        <div class="pop-box">
+            <h3 class="pop-title" id="introTitle">骏马介绍</h3>
+            <div class="pop-text" id="introText"></div>
+            <button class="古风按钮 pop-close" id="closeIntroBtn">知晓</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const horseData = [{
+        name: "assets/bai1.webp",
+        title: "白蹄乌",
+        text: "白蹄乌是唐太宗平定薛仁杲时的坐骑，通体乌黑，唯独四蹄雪白。此马日行千里，骁勇善战，随李世民长途奔袭大破敌军，象征一往无前的征战气魄。"
+    }, {
+        name: "assets/qing1.webp",
+        title: "青骓",
+        text: "青骓毛色青白相间，为李世民平定窦建德的战马。虎牢关一战，青骓身中五箭仍奋勇冲锋，是大唐开国关键战役的见证，代表忠勇不屈。"
+    }, {
+        name: "assets/quan1.webp",
+        title: "拳毛騧",
+        text: "拳毛騧周身旋毛卷曲，黄黑相间，随李世民平定刘黑闼。激战中身中九箭，力竭而亡，石刻现存美国宾夕法尼亚大学博物馆，是流失海外的国宝。"
+    }, {
+        name: "assets/sa1.webp",
+        title: "飒露紫",
+        text: "飒露紫意为“紫燕飞驰”，征讨王世充时战马。将军丘行恭为其拔箭的石刻画面极具故事性，同样流失海外，是昭陵六骏中最富人文故事的一骏。"
+    }, {
+        name: "assets/sheng1.webp",
+        title: "什伐赤",
+        text: "什伐赤来自西域波斯，纯红骏马，征战王世充、窦建德两役，身中五箭，是丝绸之路文化交融的文物象征，见证唐代开放包容。"
+    }, {
+        name: "assets/te1.webp",
+        title: "特勒骠",
+        text: "特勒骠为突厥进贡黄骠战马，毛色黄白。随李世民击败宋金刚，收复山西失地，战功赫赫，与青骓、什伐赤、白蹄乌同为留存国内的四骏，现藏西安碑林博物馆。"
+    }];
+
+    const imgList = horseData.map(item => item.name);
+    let cardData = [...imgList, ...imgList];
+    let openCards = [];
+    let lock = false;
+    let matchedPairs = 0;
+
+    const homePage = document.getElementById("homePage");
+    const gamePage = document.getElementById("gamePage");
+    const startGameBtn = document.getElementById("startGameBtn");
+    const ruleBtn = document.getElementById("ruleBtn");
+    const ruleMask = document.getElementById("ruleMask");
+    const closeRuleBtn = document.getElementById("closeRuleBtn");
+    const introMask = document.getElementById("introMask");
+    const introTitle = document.getElementById("introTitle");
+    const introText = document.getElementById("introText");
+    const closeIntroBtn = document.getElementById("closeIntroBtn");
+    const gameBox = document.getElementById("gameBox");
+    const exitGameBtn = document.getElementById("exitGameBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const matchCountEl = document.getElementById("matchCount");
+
+    startGameBtn.onclick = () => {
+        homePage.style.display = "none";
+        gamePage.style.display = "flex";
+        initGame();
+    };
+    exitGameBtn.onclick = () => {
+        gamePage.style.display = "none";
+        homePage.style.display = "flex";
+    };
+    restartBtn.onclick = initGame;
+
+    ruleBtn.onclick = () => ruleMask.style.display = "flex";
+    closeRuleBtn.onclick = () => ruleMask.style.display = "none";
+    closeIntroBtn.onclick = () => {
+        introMask.style.display = "none";
+        if (matchedPairs === 6) {
+            setTimeout(() => {
+                alert("🎉 恭喜你！六骏齐聚，你已完整了解昭陵六骏的历史文化！");
+            }, 300);
+        }
+    };
+
+    function initGame() {
+        openCards = [];
+        lock = false;
+        matchedPairs = 0;
+        matchCountEl.textContent = "0";
+        cardData = [...imgList, ...imgList].sort(() => Math.random() - 0.5);
+        renderCards();
+        introMask.style.display = "none";
+        ruleMask.style.display = "none";
+    }
+
+    function renderCards() {
+        gameBox.innerHTML = "";
+        cardData.forEach(imgName => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.dataset.img = imgName;
+            card.innerHTML = `
+                <div class="card-wrap">
+                    <div class="card-face card-back-face">?</div>
+                    <div class="card-face card-front-face">
+                        <img src="${imgName}" alt="昭陵六骏" loading="lazy">
+                    </div>
+                </div>
+            `;
+            card.addEventListener("click", flipCard);
+            gameBox.appendChild(card);
+        });
+    }
+
+    function flipCard(e) {
+        if (lock) return;
+        const card = e.currentTarget;
+        if (card.classList.contains("flip") || card.classList.contains("match")) return;
+
+        card.classList.add("flip");
+        openCards.push(card);
+
+        if (openCards.length === 2) {
+            lock = true;
+            const c1 = openCards[0];
+            const c2 = openCards[1];
+            const img1 = c1.dataset.img;
+            const img2 = c2.dataset.img;
+
+            if (img1 === img2) {
+                setTimeout(() => {
+                    c1.classList.add("match");
+                    c2.classList.add("match");
+                    openCards = [];
+                    lock = false;
+                    matchedPairs++;
+                    matchCountEl.textContent = matchedPairs;
+                    const horseInfo = horseData.find(h => h.name === img1);
+                    if (horseInfo) {
+                        introTitle.innerText = horseInfo.title;
+                        introText.innerText = horseInfo.text;
+                        introMask.style.display = "flex";
+                    }
+                }, 400);
+            } else {
+                setTimeout(() => {
+                    c1.classList.remove("flip");
+                    c2.classList.remove("flip");
+                    openCards = [];
+                    lock = false;
+                }, 600);
+            }
+        }
+    }
+
+    introMask.addEventListener("click", (e) => {
+        if (e.target === introMask) {
+            introMask.style.display = "none";
+            if (matchedPairs === 6) {
+                setTimeout(() => {
+                    alert("🎉 恭喜你！六骏齐聚，你已完整了解昭陵六骏的历史文化！");
+                }, 300);
+            }
+        }
+    });
+    ruleMask.addEventListener("click", (e) => {
+        if (e.target === ruleMask) ruleMask.style.display = "none";
+    });
+</script>
+</body>
+</html>
