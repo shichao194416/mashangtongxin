@@ -58,16 +58,15 @@ setTimeout(function () {
       <!-- 横向锁定图本身已含「马上同心社会实践团」字样，故不再重复旁边的品牌文字 -->
       <img src="assets/img/nav-logo.png" alt="马上同心社会实践团" width="221" height="36" style="width:auto;height:36px;border-radius:0;box-shadow:none">
     </a>
-    <nav class="nav__links" id="navLinks" aria-label="主导航">
-      <a href="#top">首页</a>
-      <a href="#team">团队概览</a>
-      <a href="#background">实践背景</a>
-      <a href="#ip">文化IP溯源</a>
-      <a href="#course">微课与游戏</a>
-      <a href="#achievement">成果展示</a>
-      <a href="#video">影像纪实</a>
-      <a href="#outlook">总结展望</a>
-    </nav>
+<nav class="nav__links" id="navLinks" aria-label="主导航">
+  <a href="#top">首页</a>
+  <a href="#overview">内容一览</a>
+  <a href="#team">团队概览</a>
+  <a href="#background">实践背景</a>
+  <a href="#culture">文化溯源</a>
+  <a href="#achievement">成果展示</a>
+  <a href="#outlook">总结展望</a>
+</nav>
     <button class="nav__toggle" id="navToggle" aria-label="展开导航菜单" aria-expanded="false" aria-controls="navLinks"><span></span></button>
   </div>
 </header>
@@ -89,16 +88,137 @@ setTimeout(function () {
 </section>
 
 <!-- ==================== 数据条 ==================== -->
-<section class="stats" aria-label="实践数据概览">
+<section id="overview" class="section section-overview" aria-label="内容概览">
   <div class="container">
-    <div class="stats__grid">
-      <div class="stat" data-reveal><div class="stat__num">9</div><div class="stat__label">团队成员</div></div>
-      <div class="stat" data-reveal><div class="stat__num">8</div><div class="stat__label">集系列微课</div></div>
-      <div class="stat" data-reveal><div class="stat__num">3</div><div class="stat__label">款互动游戏</div></div>
-      <div class="stat" data-reveal><div class="stat__num">1300<sup>年</sup></div><div class="stat__label">六骏交融史</div></div>
-      <div class="stat" data-reveal><div class="stat__num">55<sup>件</sup></div><div class="stat__label">特展院藏书画</div></div>
+    <h2 class="section-title">内容概览</h2>
+
+    <!-- 六骏翻转卡 -->
+    <div class="flip-cards">
+      <div class="flip-card" data-sound="lu">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <img src="assets/img/horses/stone-saluzi.webp" alt="飒露紫石刻">
+            <p>石刻形象</p>
+          </div>
+          <div class="flip-back">
+            <img src="assets/img/horses/saluzi.webp" alt="飒露紫IP">
+            <h4>飒露紫 · 露</h4>
+            <p>将军拔箭救驾，石刻唯一刻着人像</p>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" data-sound="yue">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <img src="assets/img/horses/stone-quanmaogua.webp" alt="拳毛騧石刻">
+            <p>石刻形象</p>
+          </div>
+          <div class="flip-back">
+            <img src="assets/img/horses/quanmaogua.webp" alt="拳毛騧IP">
+            <h4>拳毛騧 · 月</h4>
+            <p>身中九箭未倒，卷毛如月光漫散</p>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" data-sound="yun">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <img src="assets/img/horses/stone-baitiwu.webp" alt="白蹄乌石刻">
+            <p>石刻形象</p>
+          </div>
+          <div class="flip-back">
+            <img src="assets/img/horses/baitiwu.webp" alt="白蹄乌IP">
+            <h4>白蹄乌 · 云</h4>
+            <p>全身黑色，四蹄雪白，追风逐野</p>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" data-sound="guang">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <img src="assets/img/horses/stone-telebiao.webp" alt="特勒骠石刻">
+            <p>石刻形象</p>
+          </div>
+          <div class="flip-back">
+            <img src="assets/img/horses/telebiao.webp" alt="特勒骠IP">
+            <h4>特勒骠 · 光</h4>
+            <p>黄白相间，大宛汗血，鎏金光泽</p>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" data-sound="dian">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <img src="assets/img/horses/stone-qingzhui.webp" alt="青骓石刻">
+            <p>石刻形象</p>
+          </div>
+          <div class="flip-back">
+            <img src="assets/img/horses/qingzhui.webp" alt="青骓IP">
+            <h4>青骓 · 电</h4>
+            <p>青白战马，冲锋如风，身中五箭</p>
+          </div>
+        </div>
+      </div>
+      <div class="flip-card" data-sound="huo">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <img src="assets/img/horses/stone-shifachi.webp" alt="什伐赤石刻">
+            <p>石刻形象</p>
+          </div>
+          <div class="flip-back">
+            <img src="assets/img/horses/shifachi.webp" alt="什伐赤IP">
+            <h4>什伐赤 · 火</h4>
+            <p>纯红波斯马，浴火冲锋，臀部五箭</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 实践路线交互图 -->
+    <div class="route-map">
+      <svg viewBox="0 0 1000 300" class="route-svg">
+        <path d="M 100 150 Q 250 80, 400 150 T 700 150 T 900 150"
+              fill="none" stroke="#A63A2E" stroke-width="4" stroke-dasharray="8 6"/>
+        <circle cx="100" cy="150" r="16" fill="#C9372C" data-id="beijing"/>
+        <circle cx="400" cy="150" r="16" fill="#C9372C" data-id="xian"/>
+        <circle cx="700" cy="150" r="16" fill="#C9372C" data-id="tianshui"/>
+        <circle cx="900" cy="150" r="16" fill="#C9372C" data-id="zhangjiachuan"/>
+      </svg>
+      <div class="route-labels">
+        <span>北京·故宫</span>
+        <span>西安·碑林</span>
+        <span>天水·张家川</span>
+        <span>张家川·实践地</span>
+      </div>
+      <div id="route-detail" class="route-detail"></div>
+    </div>
+
+    <!-- 数据条跳动 -->
+    <div class="data-bar">
+      <div class="data-item">
+        <span class="data-num" data-target="12">0</span>
+        <span class="data-unit">幅</span>
+        <p>IP设计图</p>
+      </div>
+      <div class="data-item">
+        <span class="data-num" data-target="56">0</span>
+        <span class="data-unit">份</span>
+        <p>青少年书信</p>
+      </div>
+      <div class="data-item">
+        <span class="data-num" data-target="500">0</span>
+        <span class="data-unit">人次</span>
+        <p>活动参与</p>
+      </div>
+      <div class="data-item">
+        <span class="data-num" data-target="8">0</span>
+        <span class="data-unit">集</span>
+        <p>系列微课</p>
+      </div>
     </div>
   </div>
+</section>
+  
 </section>
 
 <!-- ==================== 团队概览 ==================== -->
