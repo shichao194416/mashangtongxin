@@ -555,6 +555,8 @@
       /* 记住「本次会话已进站」，站内小游戏的返回按钮就不必再弹一次封面 */
       try { sessionStorage.setItem('mstx-entered', '1'); } catch (e) {}
       bgmStartExternal();                     /* 手势内起播，必定成功 */
+      /* 封面期间 body 锁着滚动，load 时的纠偏其实没生效，这里解锁后再纠一次 */
+      window.setTimeout(function () { mstxAlignHash(true); }, 120);
       window.setTimeout(function () {
         if (gate && gate.parentNode) gate.parentNode.removeChild(gate);
       }, 900);
@@ -566,6 +568,41 @@
     gate.addEventListener('keydown', function (e) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enterSite(); }
     });
+  }
+
+  /* ------------------------------------------------- 16. 深链接落点纠偏
+     本页在 #course 之前还有几块「未预留高度」的懒加载大图
+     （.feature 整幅大图、.ratio-row 按比例排的图），它们加载完成之前高度为 0。
+     浏览器按 hash 跳转的那一刻这些图往往还没加载，跳完之后图才把版面撑开，
+     目标板块被整体下推，于是从站内小游戏点「返回」时会落到上一个板块。
+     这里等 load（图片基本就位）之后再对齐一次。
+     偏差小于 120px 就不动，避免正常浏览时平白多跳一下；用户已经手动滚动过也不再插手。 */
+  var mstxUserScrolled = false;
+  ['wheel', 'touchstart', 'keydown'].forEach(function (ev) {
+    window.addEventListener(ev, function () { mstxUserScrolled = true; }, { passive: true });
+  });
+
+  function mstxAlignHash(force) {
+    var h = location.hash;
+    if (!h || h.length < 2) return;
+    if (!force && mstxUserScrolled) return;
+    var el;
+    try { el = document.getElementById(decodeURIComponent(h.slice(1))); } catch (e) { return; }
+    if (!el) return;
+    var pad = parseFloat(window.getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+    var delta = el.getBoundingClientRect().top - pad;
+    if (Math.abs(delta) < 120) return;
+    var root = document.documentElement;
+    var prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';       /* 纠偏要瞬时完成，别再来一段平滑滚动 */
+    window.scrollTo(0, (window.scrollY || root.scrollTop) + delta);
+    root.style.scrollBehavior = prev;
+  }
+
+  if (location.hash && location.hash.length > 1) {
+    if (document.readyState === 'complete') window.setTimeout(mstxAlignHash, 0);
+    else window.addEventListener('load', function () { mstxAlignHash(); });
+    window.setTimeout(function () { mstxAlignHash(); }, 1000);   /* 兜底：极慢的图 */
   }
 
   /* 主脚本已完整执行（进场封面的内联保险丝会读这个标记） */
