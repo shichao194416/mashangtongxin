@@ -36,6 +36,23 @@
     <p class="gate__note">进入后将播放背景音乐《古道尘远》</p>
   </div>
 </div>
+<script>
+/* 跳过进场封面的判定，必须放在封面标记之后、main.js 之前同步执行，否则会闪一下。
+   两种情形跳过：
+     ① 本次会话已经进过站（例如从站内小游戏返回、或按浏览器后退回来）；
+     ② 链接显式带了 ?skipgate=1（站内小游戏的「返回」按钮就走这条）。
+   封面原本只是为了接住「第一次用户手势」来放背景音乐，而 main.js 第 440 行起
+   另有一套「首次交互自动起播」的兜底，所以跳过封面不会导致音乐丢失。 */
+(function () {
+  var skip = false;
+  try { skip = sessionStorage.getItem('mstx-entered') === '1'; } catch (e) {}
+  if (/[?&]skipgate=1/.test(location.search)) skip = true;
+  if (!skip) return;
+  window.__mstxSkipGate = true;
+  var g = document.getElementById('gate');
+  if (g && g.parentNode) g.parentNode.removeChild(g);
+})();
+</script>
 <noscript><style>.gate{display:none !important}</style></noscript>
 <script>
 /* 保险丝：仅当主脚本确实没跑起来（未置 __mstxReady）时才放行，
@@ -1237,6 +1254,6 @@ setTimeout(function () {
   </div>
 </div>
 
-<script src="assets/js/main.js?v=20261007"></script>
+<script src="assets/js/main.js?v=20261016"></script>
 </body>
 </html>

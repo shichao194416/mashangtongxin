@@ -552,6 +552,8 @@
       gate.dataset.handled = '1';
       gate.classList.add('is-out');
       document.body.classList.remove('is-locked');
+      /* 记住「本次会话已进站」，站内小游戏的返回按钮就不必再弹一次封面 */
+      try { sessionStorage.setItem('mstx-entered', '1'); } catch (e) {}
       bgmStartExternal();                     /* 手势内起播，必定成功 */
       window.setTimeout(function () {
         if (gate && gate.parentNode) gate.parentNode.removeChild(gate);
